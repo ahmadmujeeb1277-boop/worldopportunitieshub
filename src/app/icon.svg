@@ -1,0 +1,36 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="WorldOpportunitiesHub icon">
+  <defs>
+    <linearGradient id="globeBlue" x1="18" y1="18" x2="48" y2="78" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#38BDF8"/>
+      <stop offset="1" stop-color="#0369A1"/>
+    </linearGradient>
+    <linearGradient id="globeGreen" x1="48" y1="18" x2="78" y2="78" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#34D399"/>
+      <stop offset="1" stop-color="#059669"/>
+    </linearGradient>
+    <clipPath id="globeClip">
+      <circle cx="48" cy="48" r="30"/>
+    </clipPath>
+  </defs>
+
+  <circle cx="48" cy="48" r="30" fill="url(#globeBlue)"/>
+  <path d="M48 18 A30 30 0 0 1 48 78 Z" fill="url(#globeGreen)"/>
+
+  <g clip-path="url(#globeClip)" stroke="#F0FDFA" stroke-width="1.3" opacity="0.45" fill="none">
+    <ellipse cx="48" cy="48" rx="13" ry="30"/>
+    <ellipse cx="48" cy="48" rx="24" ry="30"/>
+    <line x1="18" y1="35" x2="78" y2="35"/>
+    <line x1="18" y1="48" x2="78" y2="48"/>
+    <line x1="18" y1="61" x2="78" y2="61"/>
+  </g>
+
+  <circle cx="48" cy="48" r="30" fill="none" stroke="#022c22" stroke-opacity="0.12" stroke-width="1.5"/>
+
+  <path
+    d="M20 76 L66 28"
+    stroke="#D97706"
+    stroke-width="9"
+    stroke-linecap="round"
+  />
+  <path d="M83 11 L67 37 L57 28 Z" fill="#D97706"/>
+</svg>

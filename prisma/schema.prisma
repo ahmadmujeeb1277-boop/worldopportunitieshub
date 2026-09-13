@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// NOTE: type/level/region/fundingType/status are plain strings (not native
+// Prisma enums) on purpose — SQLite has no native enum support, and this way
+// the schema moves to Postgres later without a migration rewrite. Allowed
+// values are enforced in code via src/lib/taxonomy.ts + zod, not the DB.
+
+model Opportunity {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  type          String // scholarship | job | grant | fellowship | internship | competition | conference | exchange | training | workshop | volunteering | other
+  status        String   @default("draft") // draft | published
+  summary       String
+  body          String // long-form article body, stored as markdown
+  organization  String
+  officialUrl   String
+  country       String?
+  region        String // africa | asia | europe | north-america | south-america | oceania | middle-east | global
+  level         String? // high-school | undergraduate | masters | phd | postdoc | professional | any
+  fundingType   String // fully-funded | partially-funded | paid | unpaid | unspecified
+  deadline      DateTime?
+  coverImage    String?
+  isFeatured    Boolean  @default(false)
+  viewCount     Int      @default(0)
+  publishedAt   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  tags          TagOnOpportunity[]
+
+  @@index([type])
+  @@index([region])
+  @@index([status])
+  @@index([deadline])
+}
+
+model Article {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String
+  body        String
+  coverImage  String?
+  author      String   @default("WorldOpportunitiesHub Team")
+  status      String   @default("draft") // draft | published
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tags        TagOnArticle[]
+
+  @@index([status])
+}
+
+model Tag {
+  id           String             @id @default(cuid())
+  name         String             @unique
+  slug         String             @unique
+  opportunities TagOnOpportunity[]
+  articles     TagOnArticle[]
+}
+
+model TagOnOpportunity {
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  opportunityId String
+  tag           Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId         String
+
+  @@id([opportunityId, tagId])
+}
+
+model TagOnArticle {
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId String
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId     String
+
+  @@id([articleId, tagId])
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}

@@ -1,0 +1,42 @@
+{
+  "name": "worldopportunitieshub",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@phosphor-icons/react": "^2",
+    "@prisma/client": "^6",
+    "bcryptjs": "^2.4.3",
+    "date-fns": "^4",
+    "jose": "^5",
+    "marked": "^18.0.13",
+    "next": "16.3.5",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "slugify": "^1.6.6",
+    "zod": "^3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/typography": "^0.5.20",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.5",
+    "prisma": "^6",
+    "tailwindcss": "^4",
+    "tsx": "^4",
+    "typescript": "^5"
+  }
+}
