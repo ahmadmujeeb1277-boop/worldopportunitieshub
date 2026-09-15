@@ -40,18 +40,16 @@ export default async function HomePage() {
             <ShieldCheck size={14} weight="fill" aria-hidden="true" />
             Verified opportunities, updated daily
           </span>
-          <h1
-            className="mt-6 font-display text-4xl font-bold tracking-tight text-card-foreground sm:text-5xl lg:text-6xl [text-shadow:0_2px_16px_rgba(255,255,255,0.7)]"
-          >
-            Find your next scholarship, job, grant, or fellowship
-          </h1>
-          <p
-            className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground [text-shadow:0_1px_10px_rgba(255,255,255,0.8)]"
-          >
-            WorldOpportunitiesHub curates opportunities from official sources around the
-            world. Search, read the full details, and apply directly on the provider&apos;s
-            website.
-          </p>
+          <div className="mx-auto mt-6 w-fit max-w-3xl rounded-2xl bg-black/45 px-6 py-5 sm:px-10 sm:py-7">
+            <h1 className="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl [text-shadow:0_2px_14px_rgba(0,0,0,0.5),0_1px_3px_rgba(0,0,0,0.4)]">
+              Find your next scholarship, job, grant, or fellowship
+            </h1>
+            <p className="mx-auto mt-5 max-w-2xl text-lg text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.45),0_1px_2px_rgba(0,0,0,0.35)]">
+              WorldOpportunitiesHub curates opportunities from official sources around the
+              world. Search, read the full details, and apply directly on the provider&apos;s
+              website.
+            </p>
+          </div>
 
           <form action="/opportunities" className="mx-auto mt-8 flex max-w-xl gap-2">
             <label htmlFor="hero-search" className="sr-only">
