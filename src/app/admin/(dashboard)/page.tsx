@@ -47,7 +47,7 @@ export default async function AdminDashboardPage() {
           <Link
             key={label}
             href={href}
-            className="rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary"
+            className="rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:border-primary"
           >
             <div className="flex items-center justify-between">
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">

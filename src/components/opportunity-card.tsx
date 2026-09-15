@@ -8,14 +8,14 @@ export function OpportunityCard({ opportunity }: { opportunity: Opportunity }) {
   return (
     <Link
       href={`/opportunities/${opportunity.type}/${opportunity.slug}`}
-      className="group flex h-full flex-col rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:shadow-md focus-visible:-translate-y-0.5 focus-visible:shadow-md"
+      className="group flex h-full flex-col rounded-xl border border-border bg-card p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md focus-visible:-translate-y-0.5 focus-visible:shadow-md"
     >
       <div className="flex items-center justify-between gap-2">
         <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
           {opportunityTypeLabel(opportunity.type)}
         </span>
         {opportunity.isFeatured && (
-          <span className="flex items-center gap-1 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent">
+          <span className="flex items-center gap-1 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-amber-800">
             <Sparkle size={12} weight="fill" aria-hidden="true" />
             Featured
           </span>

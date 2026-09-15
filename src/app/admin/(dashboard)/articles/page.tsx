@@ -27,7 +27,7 @@ export default async function AdminArticlesPage() {
         </Link>
       </div>
 
-      <div className="mt-6 overflow-x-auto rounded-xl border border-border bg-card">
+      <div className="mt-6 overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-border text-xs uppercase tracking-wide text-muted-foreground">
             <tr>

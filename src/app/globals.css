@@ -1,35 +1,28 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Clean light theme. Primary green is deepened from the brand's original
+   #059669 to #047857 specifically so it passes 4.5:1 text contrast on white
+   — it's used as running text/links/icons throughout, not just button fills,
+   where the lighter shade would fail WCAG AA. This is the single source of
+   truth for site color — update tokens here, not per-component. */
 :root {
-  --color-primary: #059669;
-  --color-on-primary: #000000;
-  --color-secondary: #10b981;
-  --color-on-secondary: #0f172a;
+  --color-primary: #047857;
+  --color-on-primary: #ffffff;
+  --color-secondary: #059669;
+  --color-on-secondary: #ffffff;
   --color-accent: #d97706;
   --color-on-accent: #000000;
-  --color-background: #ecfdf5;
-  --color-foreground: #064e3b;
+  --color-background: #ffffff;
+  --color-foreground: #1a1a1a;
   --color-card: #ffffff;
-  --color-card-foreground: #064e3b;
-  --color-muted: #e8f1f3;
-  --color-muted-foreground: #475569;
-  --color-border: #a7f3d0;
-  --color-destructive: #dc2626;
+  --color-card-foreground: #1a1a1a;
+  --color-muted: #f8f9fa;
+  --color-muted-foreground: #4a4a4a;
+  --color-border: #e5e7eb;
+  --color-destructive: #b91c1c;
   --color-on-destructive: #ffffff;
-  --color-ring: #059669;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: #062018;
-    --color-foreground: #ecfdf5;
-    --color-card: #0b2e24;
-    --color-card-foreground: #ecfdf5;
-    --color-muted: #0f3b2e;
-    --color-muted-foreground: #9cc9b8;
-    --color-border: #14532d;
-  }
+  --color-ring: #047857;
 }
 
 @theme inline {
@@ -69,8 +62,8 @@ body {
 }
 
 /* Tailwind Typography ships its own gray scale by default, which doesn't
-   track our theme tokens and reads as low-contrast in dark mode. Rebind its
-   custom properties to our tokens so article prose stays legible in both. */
+   track our theme tokens. Rebind its custom properties to our tokens so
+   article prose matches the rest of the site. */
 .prose {
   --tw-prose-body: var(--color-card-foreground);
   --tw-prose-headings: var(--color-card-foreground);

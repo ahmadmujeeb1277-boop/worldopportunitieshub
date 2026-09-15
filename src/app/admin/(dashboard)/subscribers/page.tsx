@@ -14,7 +14,7 @@ export default async function AdminSubscribersPage() {
       <h1 className="font-display text-2xl font-bold text-card-foreground">Newsletter Subscribers</h1>
       <p className="mt-1 text-sm text-muted-foreground">{subscribers.length} total</p>
 
-      <div className="mt-6 overflow-x-auto rounded-xl border border-border bg-card">
+      <div className="mt-6 overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-border text-xs uppercase tracking-wide text-muted-foreground">
             <tr>

@@ -90,7 +90,7 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
         </article>
 
         <aside className="lg:col-span-1">
-          <div className="sticky top-24 rounded-xl border border-border bg-card p-5">
+          <div className="sticky top-24 rounded-xl border border-border bg-card p-5 shadow-sm">
             <dl className="space-y-4 text-sm">
               <div className="flex items-start gap-3">
                 <Buildings size={18} className="mt-0.5 text-primary" aria-hidden="true" />

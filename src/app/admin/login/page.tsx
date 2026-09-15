@@ -12,7 +12,7 @@ export default async function AdminLoginPage({ searchParams }: PageProps) {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="w-full max-w-sm rounded-xl border border-border bg-card p-8">
+      <div className="w-full max-w-sm rounded-xl border border-border bg-card p-8 shadow-sm">
         <h1 className="font-display text-2xl font-bold text-card-foreground">Admin Login</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           WorldOpportunitiesHub content management

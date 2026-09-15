@@ -19,7 +19,7 @@ export function OpportunityFilters({
     <form
       action={basePath}
       method="get"
-      className="grid grid-cols-1 gap-3 rounded-xl border border-border bg-card p-4 sm:grid-cols-2 lg:grid-cols-5"
+      className="grid grid-cols-1 gap-3 rounded-xl border border-border bg-card p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-5"
     >
       <div className="sm:col-span-2 lg:col-span-2">
         <label htmlFor="q" className="mb-1 block text-xs font-medium text-muted-foreground">

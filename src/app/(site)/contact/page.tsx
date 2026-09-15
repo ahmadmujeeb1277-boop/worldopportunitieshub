@@ -45,7 +45,7 @@ export default function ContactPage() {
 
       <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
         {reasons.map(({ Icon, title, body }) => (
-          <div key={title} className="rounded-xl border border-border bg-card p-5">
+          <div key={title} className="rounded-xl border border-border bg-card p-5 shadow-sm">
             <Icon size={22} className="text-primary" aria-hidden="true" />
             <h3 className="mt-3 font-semibold text-card-foreground">{title}</h3>
             <p className="mt-1.5 text-sm text-muted-foreground">{body}</p>

@@ -25,7 +25,7 @@ export function Logo({
         <span className={`font-bold tracking-tight ${textSize}`}>
           <span className="text-card-foreground">World</span>
           <span className="text-primary">Opportunities</span>
-          <span className="text-[#0369A1] dark:text-sky-400">Hub</span>
+          <span className="text-[#0369A1]">Hub</span>
         </span>
         {showTagline && (
           <span className="mt-1 text-xs font-medium text-muted-foreground tracking-wide">

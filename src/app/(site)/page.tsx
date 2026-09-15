@@ -12,6 +12,7 @@ import { featuredOpportunities, latestOpportunities, latestArticles } from "@/li
 import { OpportunityCard } from "@/components/opportunity-card";
 import { ArticleCard } from "@/components/article-card";
 import { NewsletterForm } from "@/components/newsletter-form";
+import { HeroVideo } from "@/components/hero-video";
 import { OPPORTUNITY_TYPES } from "@/lib/taxonomy";
 
 const categoryIcons: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
@@ -32,8 +33,9 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-border bg-gradient-to-br from-primary/10 via-background to-accent/10">
-        <div className="mx-auto max-w-5xl px-4 py-20 text-center sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden border-b border-border">
+        <HeroVideo />
+        <div className="relative z-10 mx-auto max-w-5xl px-4 py-20 text-center sm:px-6 lg:px-8">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-primary">
             <ShieldCheck size={14} weight="fill" aria-hidden="true" />
             Verified opportunities, updated daily
@@ -99,7 +101,7 @@ export default async function HomePage() {
               <Link
                 key={t.value}
                 href={`/opportunities/${t.value}`}
-                className="group flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-6 text-center transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-md"
+                className="group flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-6 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-md"
               >
                 <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                   <Icon size={24} aria-hidden="true" />
