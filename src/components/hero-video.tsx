@@ -38,7 +38,17 @@ export function HeroVideo() {
           className="object-cover"
         />
       )}
-      <div className="absolute inset-0 bg-background/80" />
+      {/* Scrim concentrated behind the headline/subtext band, fading to
+          near-transparent at the top and bottom edges so the video itself
+          stays the dominant visual — the search bar and pills below have
+          their own solid backgrounds and don't need help from this. */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.42) 24%, rgba(255,255,255,0.42) 56%, rgba(255,255,255,0) 90%)",
+        }}
+      />
     </div>
   );
 }
