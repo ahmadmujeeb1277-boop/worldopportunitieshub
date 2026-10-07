@@ -8,6 +8,7 @@ import {
 import { CategorySection } from "@/components/category-section";
 import { KindIcon } from "@/components/card-image";
 import { typeTheme } from "@/lib/type-theme";
+import { SOCIAL_LINKS } from "@/lib/social";
 import { OpportunityCard } from "@/components/opportunity-card";
 import { ArticleCard } from "@/components/article-card";
 import { NewsletterForm } from "@/components/newsletter-form";
@@ -49,6 +50,16 @@ export default async function HomePage() {
             target: `${siteUrl}/opportunities?q={search_term_string}`,
             "query-input": "required name=search_term_string",
           },
+        }}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "WorldOpportunitiesHub",
+          url: siteUrl,
+          logo: `${siteUrl}/brand/logo-icon.svg`,
+          sameAs: SOCIAL_LINKS.map((l) => l.href),
         }}
       />
       {/* Hero */}

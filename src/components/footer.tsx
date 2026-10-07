@@ -1,23 +1,16 @@
 import Link from "next/link";
-import {
-  FacebookLogo,
-  TwitterLogo,
-  InstagramLogo,
-  LinkedinLogo,
-  YoutubeLogo,
-} from "@phosphor-icons/react/dist/ssr";
+import { FacebookLogo, InstagramLogo, LinkedinLogo } from "@phosphor-icons/react/dist/ssr";
 import { Logo } from "./logo";
 import { OPPORTUNITY_TYPES, REGIONS } from "@/lib/taxonomy";
 import { NewsletterForm } from "./newsletter-form";
 import { WhatsAppBanner } from "./whatsapp-banner";
+import { SOCIAL_LINKS } from "@/lib/social";
 
-const socialLinks = [
-  { href: "https://facebook.com", label: "Facebook", Icon: FacebookLogo },
-  { href: "https://twitter.com", label: "Twitter / X", Icon: TwitterLogo },
-  { href: "https://instagram.com", label: "Instagram", Icon: InstagramLogo },
-  { href: "https://linkedin.com", label: "LinkedIn", Icon: LinkedinLogo },
-  { href: "https://youtube.com", label: "YouTube", Icon: YoutubeLogo },
-];
+const socialIcons = {
+  Facebook: FacebookLogo,
+  Instagram: InstagramLogo,
+  LinkedIn: LinkedinLogo,
+} as const;
 
 export function Footer() {
   return (
@@ -33,18 +26,21 @@ export function Footer() {
               official source to apply.
             </p>
             <div className="mt-5 flex gap-2">
-              {socialLinks.map(({ href, label, Icon }) => (
+              {SOCIAL_LINKS.map(({ href, label }) => {
+                const Icon = socialIcons[label];
+                return (
                 <a
                   key={label}
                   href={href}
-                  aria-label={label}
+                  aria-label={`${label} (opens in a new tab)`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-[var(--color-on-primary)]"
                 >
                   <Icon size={18} aria-hidden="true" />
                 </a>
-              ))}
+                );
+              })}
             </div>
           </div>
 
