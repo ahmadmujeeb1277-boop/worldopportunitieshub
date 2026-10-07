@@ -1,11 +1,31 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { upload } from "@vercel/blob/client";
 import { ImageSquare, Trash, UploadSimple, WarningCircle } from "@phosphor-icons/react";
 
 const MAX_BYTES = 8 * 1024 * 1024;
+const MAX_WIDTH = 1600;
 const ACCEPTED = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+
+// Scales the image down to at most 1600px wide and re-encodes it as WebP,
+// which keeps uploads small and pages fast. Animated GIFs become still images.
+async function shrinkImage(file: File): Promise<File> {
+  const bitmap = await createImageBitmap(file);
+  const scale = Math.min(1, MAX_WIDTH / bitmap.width);
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(bitmap.width * scale);
+  canvas.height = Math.round(bitmap.height * scale);
+  canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+
+  const blob = await new Promise<Blob | null>((resolve) =>
+    canvas.toBlob(resolve, "image/webp", 0.85),
+  );
+  if (!blob) return file;
+
+  const baseName = file.name.replace(/\.[^.]+$/, "") || "image";
+  return new File([blob], `${baseName}.webp`, { type: "image/webp" });
+}
 
 export function ImageUpload({
   name,
@@ -37,11 +57,18 @@ export function ImageUpload({
 
     setUploading(true);
     try {
-      const blob = await upload(file.name, file, {
-        access: "public",
-        handleUploadUrl: "/api/upload",
-      });
-      setUrl(blob.url);
+      const resized = await shrinkImage(file);
+      const body = new FormData();
+      body.append("file", resized);
+
+      const res = await fetch("/api/upload", { method: "POST", body });
+      const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string };
+
+      if (!res.ok || !data.url) {
+        setError(data.error ? `Upload failed: ${data.error}` : "The upload failed. Try again.");
+        return;
+      }
+      setUrl(data.url);
     } catch {
       setError("The upload failed. Check your connection and try again.");
     } finally {
