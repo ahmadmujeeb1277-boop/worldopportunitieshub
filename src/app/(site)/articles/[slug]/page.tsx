@@ -6,6 +6,7 @@ import { articleBySlug } from "@/lib/queries";
 import { formatDate } from "@/lib/format";
 import { renderMarkdown } from "@/lib/markdown";
 import { JsonLd } from "@/components/json-ld";
+import { CardImage } from "@/components/card-image";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -25,6 +26,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: article.title,
       description: article.excerpt,
       url: path,
+      images: [article.coverImage ?? "/og-default.jpg"],
       publishedTime: article.publishedAt?.toISOString(),
       modifiedTime: article.updatedAt.toISOString(),
       authors: [article.author],
@@ -66,7 +68,11 @@ export default async function ArticleDetailPage({ params }: PageProps) {
         <Link href="/articles" className="hover:text-primary">Articles</Link>
       </nav>
 
-      <h1 className="mt-4 font-display text-3xl font-bold text-card-foreground sm:text-4xl">
+      <div className="mt-6 aspect-[16/9] w-full overflow-hidden rounded-xl border border-border bg-muted shadow-sm">
+        <CardImage src={article.coverImage} alt={article.title} kind="article" iconSize={72} />
+      </div>
+
+      <h1 className="mt-6 font-display text-3xl font-bold text-card-foreground sm:text-4xl">
         {article.title}
       </h1>
 

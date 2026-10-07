@@ -22,6 +22,7 @@ import { renderMarkdown } from "@/lib/markdown";
 import { OpportunityCard } from "@/components/opportunity-card";
 import { ApplyButton } from "@/components/apply-button";
 import { JsonLd } from "@/components/json-ld";
+import { CardImage } from "@/components/card-image";
 import { isPast } from "date-fns";
 
 interface PageProps {
@@ -42,6 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: opportunity.title,
       description: opportunity.summary,
       url: path,
+      images: [opportunity.coverImage ?? "/og-default.jpg"],
       publishedTime: opportunity.publishedAt?.toISOString(),
       modifiedTime: opportunity.updatedAt.toISOString(),
     },
@@ -95,6 +97,14 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
 
       <div className="mt-6 grid grid-cols-1 gap-10 lg:grid-cols-3">
         <article className="lg:col-span-2">
+          <div className="mb-6 aspect-[16/9] w-full overflow-hidden rounded-xl border border-border bg-muted shadow-sm">
+            <CardImage
+              src={opportunity.coverImage}
+              alt={opportunity.title}
+              kind={opportunity.type}
+              iconSize={72}
+            />
+          </div>
           <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
             {opportunityTypeLabel(opportunity.type)}
           </span>
