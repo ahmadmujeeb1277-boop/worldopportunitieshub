@@ -140,7 +140,9 @@ export function OpportunityForm({
           />
           <FieldError message={errors.officialUrl} />
         </div>
-        <ImageUpload name="coverImage" label="Featured image" initialUrl={opportunity?.coverImage} />
+        <div className="sm:col-span-2">
+          <ImageUpload name="coverImage" label="Featured image" initialUrl={opportunity?.coverImage} />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

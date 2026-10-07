@@ -98,7 +98,9 @@ export function ArticleForm({
           />
           <FieldError message={errors.author} />
         </div>
-        <ImageUpload name="coverImage" label="Featured image" initialUrl={article?.coverImage} />
+        <div className="sm:col-span-2">
+          <ImageUpload name="coverImage" label="Featured image" initialUrl={article?.coverImage} />
+        </div>
       </div>
 
       <fieldset className="flex items-center gap-4">

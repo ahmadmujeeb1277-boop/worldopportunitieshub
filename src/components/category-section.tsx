@@ -53,7 +53,10 @@ export function CategorySection({
           {rest.length > 0 && (
             <div className="flex flex-col gap-3 lg:col-span-2">
               {rest.map((o) => (
-                <div key={o.id} className="flex flex-1 [&>a]:w-full">
+                <div
+                  key={o.id}
+                  className={rest.length >= 3 ? "flex flex-1 [&>a]:w-full" : "[&>a]:w-full"}
+                >
                   <OpportunityRow opportunity={o} />
                 </div>
               ))}
