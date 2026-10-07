@@ -35,6 +35,19 @@ const kindIcons: Record<string, IconComponent> = {
   article: Newspaper,
 };
 
+export function KindIcon({
+  kind,
+  size = 24,
+  className = "",
+}: {
+  kind: string;
+  size?: number;
+  className?: string;
+}) {
+  const Icon = kindIcons[kind] ?? Compass;
+  return <Icon size={size} className={className} />;
+}
+
 // Fills its parent, so the parent sets the aspect ratio and clipping.
 export function CardImage({
   src,

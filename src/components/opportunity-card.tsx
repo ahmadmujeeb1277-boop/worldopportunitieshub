@@ -3,13 +3,14 @@ import { CalendarBlank, MapPin, Sparkle } from "@phosphor-icons/react/dist/ssr";
 import type { Opportunity } from "@prisma/client";
 import { opportunityTypeLabel, regionLabel, fundingTypeLabel } from "@/lib/taxonomy";
 import { formatDate, formatDeadline } from "@/lib/format";
+import { typeTheme } from "@/lib/type-theme";
 import { CardImage } from "./card-image";
 
 export function OpportunityCard({ opportunity }: { opportunity: Opportunity }) {
   return (
     <Link
       href={`/opportunities/${opportunity.type}/${opportunity.slug}`}
-      className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md focus-visible:-translate-y-0.5 focus-visible:shadow-md"
+      className={`group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md focus-visible:-translate-y-0.5 focus-visible:shadow-md ${typeTheme(opportunity.type).hoverBorder}`}
     >
       <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
         <CardImage
@@ -28,7 +29,9 @@ export function OpportunityCard({ opportunity }: { opportunity: Opportunity }) {
 
       <div className="flex flex-1 flex-col p-5">
         <div className="flex items-center justify-between gap-2">
-          <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+          <span
+            className={`rounded-full px-2.5 py-1 text-xs font-semibold ${typeTheme(opportunity.type).badge}`}
+          >
             {opportunityTypeLabel(opportunity.type)}
           </span>
           {opportunity.publishedAt && (

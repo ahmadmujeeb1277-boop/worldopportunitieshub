@@ -23,6 +23,14 @@ export function latestOpportunities(take = 8) {
   });
 }
 
+export function latestOpportunitiesByType(type: string, take = 5) {
+  return prisma.opportunity.findMany({
+    where: { status: "published", type, ...stillOpen() },
+    orderBy: { publishedAt: "desc" },
+    take,
+  });
+}
+
 export function latestArticles(take = 3) {
   return prisma.article.findMany({
     where: { status: "published" },

@@ -23,6 +23,7 @@ import { OpportunityCard } from "@/components/opportunity-card";
 import { ApplyButton } from "@/components/apply-button";
 import { JsonLd } from "@/components/json-ld";
 import { CardImage } from "@/components/card-image";
+import { typeTheme } from "@/lib/type-theme";
 import { isPast } from "date-fns";
 
 interface PageProps {
@@ -105,7 +106,9 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
               iconSize={72}
             />
           </div>
-          <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+          <span
+            className={`rounded-full px-2.5 py-1 text-xs font-semibold ${typeTheme(opportunity.type).badge}`}
+          >
             {opportunityTypeLabel(opportunity.type)}
           </span>
           <h1 className="mt-4 font-display text-3xl font-bold text-card-foreground sm:text-4xl">
