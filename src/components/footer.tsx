@@ -1,21 +1,15 @@
 import Link from "next/link";
-import { FacebookLogo, InstagramLogo, LinkedinLogo } from "@phosphor-icons/react/dist/ssr";
 import { Logo } from "./logo";
 import { OPPORTUNITY_TYPES, REGIONS } from "@/lib/taxonomy";
 import { NewsletterForm } from "./newsletter-form";
 import { WhatsAppBanner } from "./whatsapp-banner";
-import { SOCIAL_LINKS } from "@/lib/social";
-
-const socialIcons = {
-  Facebook: FacebookLogo,
-  Instagram: InstagramLogo,
-  LinkedIn: LinkedinLogo,
-} as const;
+import { SocialBand } from "./social-buttons";
 
 export function Footer() {
   return (
     <footer className="mt-24 border-t border-border bg-card">
       <WhatsAppBanner />
+      <SocialBand />
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-5">
           <div className="md:col-span-2">
@@ -25,23 +19,6 @@ export function Footer() {
               and fellowships from around the world and links you straight to the
               official source to apply.
             </p>
-            <div className="mt-5 flex gap-2">
-              {SOCIAL_LINKS.map(({ href, label }) => {
-                const Icon = socialIcons[label];
-                return (
-                <a
-                  key={label}
-                  href={href}
-                  aria-label={`${label} (opens in a new tab)`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-[var(--color-on-primary)]"
-                >
-                  <Icon size={18} aria-hidden="true" />
-                </a>
-                );
-              })}
-            </div>
           </div>
 
           <div>

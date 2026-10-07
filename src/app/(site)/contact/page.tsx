@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { EnvelopeSimple, MegaphoneSimple, Bug } from "@phosphor-icons/react/dist/ssr";
 
+import { SocialButtons } from "@/components/social-buttons";
+
 export const metadata: Metadata = {
   title: "Contact Us",
   alternates: { canonical: "/contact" },
@@ -43,6 +45,11 @@ export default function ContactPage() {
         <EnvelopeSimple size={18} aria-hidden="true" />
         {CONTACT_EMAIL}
       </a>
+
+      <h2 className="mt-10 font-display text-xl font-bold text-card-foreground">
+        Or find us on social media
+      </h2>
+      <SocialButtons className="mt-4" />
 
       <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
         {reasons.map(({ Icon, title, body }) => (
