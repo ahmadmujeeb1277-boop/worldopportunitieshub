@@ -3,6 +3,7 @@ import { ShieldCheck, MagnifyingGlass, Rocket } from "@phosphor-icons/react/dist
 
 export const metadata: Metadata = {
   title: "About Us",
+  alternates: { canonical: "/about" },
   description: "Learn how WorldOpportunitiesHub curates scholarships, jobs, grants, and fellowships.",
 };
 

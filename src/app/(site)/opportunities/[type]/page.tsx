@@ -28,6 +28,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: label,
     description: `Browse verified ${label.toLowerCase()} from official sources around the world.`,
+    alternates: { canonical: `/opportunities/${type}` },
   };
 }
 

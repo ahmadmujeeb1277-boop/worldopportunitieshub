@@ -5,6 +5,7 @@ import { CalendarBlank, CaretRight, UserCircle } from "@phosphor-icons/react/dis
 import { articleBySlug } from "@/lib/queries";
 import { formatDate } from "@/lib/format";
 import { renderMarkdown } from "@/lib/markdown";
+import { JsonLd } from "@/components/json-ld";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -14,7 +15,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const article = await articleBySlug(slug);
   if (!article) return {};
-  return { title: article.title, description: article.excerpt };
+  const path = `/articles/${article.slug}`;
+  return {
+    title: article.title,
+    description: article.excerpt,
+    alternates: { canonical: path },
+    openGraph: {
+      type: "article",
+      title: article.title,
+      description: article.excerpt,
+      url: path,
+      publishedTime: article.publishedAt?.toISOString(),
+      modifiedTime: article.updatedAt.toISOString(),
+      authors: [article.author],
+    },
+  };
 }
 
 export default async function ArticleDetailPage({ params }: PageProps) {
@@ -28,9 +43,23 @@ export default async function ArticleDetailPage({ params }: PageProps) {
   // Content is authored only by the trusted admin account, so raw HTML from
   // our own markdown renderer is safe to inject without a sanitizer here.
   const bodyHtml = renderMarkdown(article.body);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: article.title,
+          description: article.excerpt,
+          author: { "@type": "Organization", name: article.author },
+          publisher: { "@type": "Organization", name: "WorldOpportunitiesHub" },
+          datePublished: article.publishedAt?.toISOString(),
+          dateModified: article.updatedAt.toISOString(),
+          mainEntityOfPage: `${siteUrl}/articles/${article.slug}`,
+        }}
+      />
       <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-sm text-muted-foreground">
         <Link href="/" className="hover:text-primary">Home</Link>
         <CaretRight size={12} aria-hidden="true" />

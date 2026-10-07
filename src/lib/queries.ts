@@ -1,8 +1,15 @@
 import { prisma } from "./prisma";
 
+// Listings with no deadline (rolling) or a deadline that hasn't passed yet.
+function stillOpen() {
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  return { OR: [{ deadline: null }, { deadline: { gte: startOfToday } }] };
+}
+
 export function featuredOpportunities(take = 6) {
   return prisma.opportunity.findMany({
-    where: { status: "published", isFeatured: true },
+    where: { status: "published", isFeatured: true, ...stillOpen() },
     orderBy: { publishedAt: "desc" },
     take,
   });
@@ -10,7 +17,7 @@ export function featuredOpportunities(take = 6) {
 
 export function latestOpportunities(take = 8) {
   return prisma.opportunity.findMany({
-    where: { status: "published" },
+    where: { status: "published", ...stillOpen() },
     orderBy: { publishedAt: "desc" },
     take,
   });
@@ -43,15 +50,20 @@ export async function searchOpportunities(filters: OpportunityFilters) {
     ...(region ? { region } : {}),
     ...(level ? { level } : {}),
     ...(fundingType ? { fundingType } : {}),
-    ...(q
-      ? {
-          OR: [
-            { title: { contains: q } },
-            { summary: { contains: q } },
-            { organization: { contains: q } },
-          ],
-        }
-      : {}),
+    AND: [
+      stillOpen(),
+      ...(q
+        ? [
+            {
+              OR: [
+                { title: { contains: q } },
+                { summary: { contains: q } },
+                { organization: { contains: q } },
+              ],
+            },
+          ]
+        : []),
+    ],
   };
 
   const [items, total] = await Promise.all([

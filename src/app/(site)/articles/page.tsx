@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/empty-state";
 
 export const metadata: Metadata = {
   title: "Articles & Guides",
+  alternates: { canonical: "/articles" },
   description: "Tips and guides for scholarship essays, job applications, grants, and more.",
 };
 

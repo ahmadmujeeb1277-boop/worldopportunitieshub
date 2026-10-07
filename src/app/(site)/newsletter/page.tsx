@@ -4,6 +4,7 @@ import { NewsletterForm } from "@/components/newsletter-form";
 
 export const metadata: Metadata = {
   title: "Get Alerts",
+  alternates: { canonical: "/newsletter" },
   description: "Subscribe to get new scholarships, jobs, grants, and fellowships in your inbox.",
 };
 

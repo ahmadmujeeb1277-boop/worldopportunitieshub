@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/empty-state";
 
 export const metadata: Metadata = {
   title: "Browse Opportunities",
+  alternates: { canonical: "/opportunities" },
   description:
     "Search and filter scholarships, jobs, grants, fellowships, and more from verified sources worldwide.",
 };

@@ -13,6 +13,8 @@ import { OpportunityCard } from "@/components/opportunity-card";
 import { ArticleCard } from "@/components/article-card";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { HeroVideo } from "@/components/hero-video";
+import { JsonLd } from "@/components/json-ld";
+import type { Metadata } from "next";
 import { OPPORTUNITY_TYPES } from "@/lib/taxonomy";
 
 const categoryIcons: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
@@ -23,7 +25,12 @@ const categoryIcons: Record<string, React.ComponentType<{ size?: number; classNa
   internship: Rocket,
 };
 
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
 export default async function HomePage() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   const [featured, latest, articles] = await Promise.all([
     featuredOpportunities(6),
     latestOpportunities(8),
@@ -32,6 +39,19 @@ export default async function HomePage() {
 
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "WorldOpportunitiesHub",
+          url: siteUrl,
+          potentialAction: {
+            "@type": "SearchAction",
+            target: `${siteUrl}/opportunities?q={search_term_string}`,
+            "query-input": "required name=search_term_string",
+          },
+        }}
+      />
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border">
         <HeroVideo />

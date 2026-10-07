@@ -22,6 +22,16 @@ export const metadata: Metadata = {
   description:
     "Discover fully funded scholarships, jobs, grants, and fellowships from around the world. WorldOpportunitiesHub curates verified opportunities and connects you directly to the official application.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  openGraph: {
+    type: "website",
+    siteName: "WorldOpportunitiesHub",
+    locale: "en_US",
+    images: [{ url: "/og-default.jpg", width: 1200, height: 630, alt: "WorldOpportunitiesHub" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og-default.jpg"],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

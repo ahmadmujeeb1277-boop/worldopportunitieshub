@@ -21,6 +21,8 @@ import { formatDeadline } from "@/lib/format";
 import { renderMarkdown } from "@/lib/markdown";
 import { OpportunityCard } from "@/components/opportunity-card";
 import { ApplyButton } from "@/components/apply-button";
+import { JsonLd } from "@/components/json-ld";
+import { isPast } from "date-fns";
 
 interface PageProps {
   params: Promise<{ type: string; slug: string }>;
@@ -30,9 +32,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const opportunity = await opportunityBySlug(slug);
   if (!opportunity) return {};
+  const path = `/opportunities/${opportunity.type}/${opportunity.slug}`;
   return {
     title: opportunity.title,
     description: opportunity.summary,
+    alternates: { canonical: path },
+    openGraph: {
+      type: "article",
+      title: opportunity.title,
+      description: opportunity.summary,
+      url: path,
+      publishedTime: opportunity.publishedAt?.toISOString(),
+      modifiedTime: opportunity.updatedAt.toISOString(),
+    },
   };
 }
 
@@ -50,9 +62,27 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
   // Content is authored only by the trusted admin account, so raw HTML from
   // our own markdown renderer is safe to inject without a sanitizer here.
   const bodyHtml = renderMarkdown(opportunity.body);
+  const isClosed = opportunity.deadline ? isPast(opportunity.deadline) : false;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: opportunityTypeLabel(opportunity.type),
+              item: `${siteUrl}/opportunities/${opportunity.type}`,
+            },
+            { "@type": "ListItem", position: 3, name: opportunity.title },
+          ],
+        }}
+      />
       <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
         <Link href="/" className="hover:text-primary">Home</Link>
         <CaretRight size={12} aria-hidden="true" />
@@ -72,6 +102,20 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
             {opportunity.title}
           </h1>
           <p className="mt-3 text-lg text-muted-foreground">{opportunity.summary}</p>
+
+          {isClosed && (
+            <p
+              role="status"
+              className="mt-5 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm font-medium text-amber-900"
+            >
+              The deadline for this opportunity has passed. Check the official website to see
+              if applications reopen, or{" "}
+              <Link href={`/opportunities/${opportunity.type}`} className="underline">
+                browse other {opportunityTypeLabel(opportunity.type).toLowerCase()}
+              </Link>
+              .
+            </p>
+          )}
 
           <div className="mt-6 lg:hidden">
             <ApplyButton href={opportunity.officialUrl} />

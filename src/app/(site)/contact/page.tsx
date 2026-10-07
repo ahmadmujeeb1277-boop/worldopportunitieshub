@@ -3,6 +3,7 @@ import { EnvelopeSimple, MegaphoneSimple, Bug } from "@phosphor-icons/react/dist
 
 export const metadata: Metadata = {
   title: "Contact Us",
+  alternates: { canonical: "/contact" },
   description: "Get in touch with the WorldOpportunitiesHub team.",
 };
 
