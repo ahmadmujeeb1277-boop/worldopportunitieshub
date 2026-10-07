@@ -9,6 +9,7 @@ import {
 import { Logo } from "./logo";
 import { OPPORTUNITY_TYPES, REGIONS } from "@/lib/taxonomy";
 import { NewsletterForm } from "./newsletter-form";
+import { WhatsAppBanner } from "./whatsapp-banner";
 
 const socialLinks = [
   { href: "https://facebook.com", label: "Facebook", Icon: FacebookLogo },
@@ -21,6 +22,7 @@ const socialLinks = [
 export function Footer() {
   return (
     <footer className="mt-24 border-t border-border bg-card">
+      <WhatsAppBanner />
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-5">
           <div className="md:col-span-2">
