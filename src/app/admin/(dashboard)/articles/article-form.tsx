@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import type { Article } from "@prisma/client";
 import { WarningCircle } from "@phosphor-icons/react";
 import type { ArticleFormState } from "@/app/actions/articles";
+import { ImageUpload } from "@/components/admin/image-upload";
 
 const initialState: ArticleFormState = { status: "idle" };
 
@@ -97,19 +98,7 @@ export function ArticleForm({
           />
           <FieldError message={errors.author} />
         </div>
-        <div>
-          <label htmlFor="coverImage" className="mb-1 block text-sm font-medium text-card-foreground">
-            Cover image URL
-          </label>
-          <input
-            id="coverImage"
-            name="coverImage"
-            type="url"
-            defaultValue={article?.coverImage ?? ""}
-            placeholder="https://... (optional)"
-            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-primary"
-          />
-        </div>
+        <ImageUpload name="coverImage" label="Featured image" initialUrl={article?.coverImage} />
       </div>
 
       <fieldset className="flex items-center gap-4">

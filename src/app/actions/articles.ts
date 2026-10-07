@@ -12,7 +12,7 @@ const schema = z.object({
   excerpt: z.string().trim().min(10, "Excerpt must be at least 10 characters."),
   body: z.string().trim().min(20, "Body must be at least 20 characters."),
   author: z.string().trim().min(2, "Author is required."),
-  coverImage: z.string().trim().optional(),
+  coverImage: z.string().trim().url().nullable(),
   status: z.enum(["draft", "published"]),
 });
 
@@ -28,7 +28,7 @@ function parseFormData(formData: FormData) {
     excerpt: formData.get("excerpt"),
     body: formData.get("body"),
     author: formData.get("author") || "WorldOpportunitiesHub Team",
-    coverImage: formData.get("coverImage") || undefined,
+    coverImage: formData.get("coverImage") || null,
     status: formData.get("status") || "draft",
   });
 }

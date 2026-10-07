@@ -19,7 +19,7 @@ const schema = z.object({
   level: z.string().optional(),
   fundingType: z.string().min(1, "Select a funding type."),
   deadline: z.string().optional(),
-  coverImage: z.string().trim().optional(),
+  coverImage: z.string().trim().url().nullable(),
   isFeatured: z.coerce.boolean().optional(),
   status: z.enum(["draft", "published"]),
 });
@@ -43,7 +43,7 @@ function parseFormData(formData: FormData) {
     level: formData.get("level") || undefined,
     fundingType: formData.get("fundingType"),
     deadline: formData.get("deadline") || undefined,
-    coverImage: formData.get("coverImage") || undefined,
+    coverImage: formData.get("coverImage") || null,
     isFeatured: formData.get("isFeatured") === "on",
     status: formData.get("status") || "draft",
   });

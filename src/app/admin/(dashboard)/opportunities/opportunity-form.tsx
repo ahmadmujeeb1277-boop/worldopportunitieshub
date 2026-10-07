@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import type { Opportunity } from "@prisma/client";
 import { WarningCircle } from "@phosphor-icons/react";
 import { OPPORTUNITY_TYPES, REGIONS, LEVELS, FUNDING_TYPES } from "@/lib/taxonomy";
+import { ImageUpload } from "@/components/admin/image-upload";
 import type { OpportunityFormState } from "@/app/actions/opportunities";
 
 const initialState: OpportunityFormState = { status: "idle" };
@@ -139,19 +140,7 @@ export function OpportunityForm({
           />
           <FieldError message={errors.officialUrl} />
         </div>
-        <div>
-          <label htmlFor="coverImage" className="mb-1 block text-sm font-medium text-card-foreground">
-            Cover image URL
-          </label>
-          <input
-            id="coverImage"
-            name="coverImage"
-            type="url"
-            defaultValue={opportunity?.coverImage ?? ""}
-            placeholder="https://... (optional)"
-            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-primary"
-          />
-        </div>
+        <ImageUpload name="coverImage" label="Featured image" initialUrl={opportunity?.coverImage} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

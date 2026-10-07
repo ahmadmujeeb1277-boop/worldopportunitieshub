@@ -15,6 +15,7 @@
   "dependencies": {
     "@phosphor-icons/react": "^2",
     "@prisma/client": "^6",
+    "@vercel/blob": "^2.8.1",
     "bcryptjs": "^2.4.3",
     "date-fns": "^4",
     "jose": "^5",
