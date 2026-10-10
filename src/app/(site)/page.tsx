@@ -56,7 +56,7 @@ export default async function HomePage() {
           "@type": "Organization",
           name: "WorldOpportunitiesHub",
           url: siteUrl,
-          logo: `${siteUrl}/brand/logo-icon.svg`,
+          logo: `${siteUrl}/brand/logo-icon.png`,
           sameAs: SOCIAL_LINKS.map((l) => l.href),
         }}
       />

@@ -14,7 +14,7 @@ export function Logo({
   return (
     <Link href="/" className="inline-flex items-center gap-2.5 group">
       <Image
-        src="/brand/logo-icon.svg"
+        src="/brand/logo-icon.png"
         alt=""
         width={dims}
         height={dims}
