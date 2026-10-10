@@ -23,6 +23,19 @@ export function latestOpportunities(take = 8) {
   });
 }
 
+const LATEST_WINDOW_HOURS = 72;
+
+// Anything published in the last 72 hours, across every category. The
+// cutoff is computed per request, so items drop out on their own.
+export function recentOpportunities(take = 6) {
+  const cutoff = new Date(Date.now() - LATEST_WINDOW_HOURS * 60 * 60 * 1000);
+  return prisma.opportunity.findMany({
+    where: { status: "published", publishedAt: { gte: cutoff }, ...stillOpen() },
+    orderBy: { publishedAt: "desc" },
+    take,
+  });
+}
+
 export function latestOpportunitiesByType(type: string, take = 5) {
   return prisma.opportunity.findMany({
     where: { status: "published", type, ...stillOpen() },

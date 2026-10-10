@@ -1,13 +1,11 @@
 import Link from "next/link";
-import { Rocket, ShieldCheck, MagnifyingGlass, Sparkle } from "@phosphor-icons/react/dist/ssr";
+import { Rocket, ShieldCheck, MagnifyingGlass, Lightning } from "@phosphor-icons/react/dist/ssr";
 import {
-  featuredOpportunities,
   latestArticles,
   latestOpportunitiesByType,
+  recentOpportunities,
 } from "@/lib/queries";
 import { CategorySection } from "@/components/category-section";
-import { KindIcon } from "@/components/card-image";
-import { typeTheme } from "@/lib/type-theme";
 import { SOCIAL_LINKS } from "@/lib/social";
 import { OpportunityCard } from "@/components/opportunity-card";
 import { ArticleCard } from "@/components/article-card";
@@ -19,8 +17,8 @@ import { OPPORTUNITY_TYPES } from "@/lib/taxonomy";
 
 const SECTIONS = [
   { type: "scholarship", title: "Scholarships", blurb: "Fully funded and partial funding for study abroad." },
+  { type: "conference", title: "Conferences", blurb: "Summits, forums and events you can attend, many fully funded." },
   { type: "fellowship", title: "Fellowships", blurb: "Research and leadership fellowships around the world." },
-  { type: "internship", title: "Internships", blurb: "Hands-on experience with leading organizations." },
   { type: "job", title: "Jobs", blurb: "Open roles at universities, NGOs and international bodies." },
   { type: "grant", title: "Grants", blurb: "Funding for projects, research and organizations." },
 ] as const;
@@ -31,8 +29,8 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const [featured, articles, ...sectionItems] = await Promise.all([
-    featuredOpportunities(6),
+  const [latest, articles, ...sectionItems] = await Promise.all([
+    recentOpportunities(6),
     latestArticles(3),
     ...SECTIONS.map((section) => latestOpportunitiesByType(section.type, 5)),
   ]);
@@ -121,59 +119,33 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <h2 className="font-display text-2xl font-bold text-card-foreground">
-          Browse by category
-        </h2>
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-          {OPPORTUNITY_TYPES.slice(0, 5).map((t) => {
-            const theme = typeTheme(t.value);
-            return (
-              <Link
-                key={t.value}
-                href={`/opportunities/${t.value}`}
-                className={`group flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-6 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md ${theme.hoverBorder}`}
-              >
-                <span
-                  className={`flex h-14 w-14 items-center justify-center rounded-2xl ${theme.iconWrap}`}
-                >
-                  <KindIcon kind={t.value} size={28} />
-                </span>
-                <span className="font-semibold text-card-foreground">{t.label}</span>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Featured */}
-      {featured.length > 0 && (
-        <section className="border-y border-amber-200 bg-amber-50/70 py-14">
+      {/* Latest: everything published in the last 72 hours, any category */}
+      {latest.length > 0 && (
+        <section className="border-b border-border bg-muted/60 py-14">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="flex items-center gap-4">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-800">
-                  <Sparkle size={26} weight="fill" aria-hidden="true" />
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <Lightning size={26} weight="fill" aria-hidden="true" />
                 </span>
                 <div>
                   <h2 className="font-display text-2xl font-bold text-card-foreground">
-                    Featured opportunities
+                    Latest Opportunities
                   </h2>
                   <p className="mt-0.5 text-sm text-muted-foreground">
-                    Hand-picked programs worth a closer look.
+                    Just added in the last 3 days, across every category.
                   </p>
                 </div>
               </div>
               <Link
                 href="/opportunities"
-                className="rounded-full border border-amber-300 bg-card px-4 py-2 text-sm font-semibold text-amber-900 transition-colors hover:bg-amber-100"
+                className="rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/10"
               >
                 Browse all &rarr;
               </Link>
             </div>
             <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {featured.map((o) => (
+              {latest.map((o) => (
                 <OpportunityCard key={o.id} opportunity={o} />
               ))}
             </div>
@@ -191,6 +163,27 @@ export default async function HomePage() {
           items={sectionItems[i]}
         />
       ))}
+
+      {/* Guides & articles */}
+      {articles.length > 0 && (
+        <section className="border-t border-border py-14">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between">
+              <h2 className="font-display text-2xl font-bold text-card-foreground">
+                Guides &amp; Articles
+              </h2>
+              <Link href="/articles" className="text-sm font-semibold text-primary hover:underline">
+                View all &rarr;
+              </Link>
+            </div>
+            <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
+              {articles.map((a) => (
+                <ArticleCard key={a.id} article={a} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Trust */}
       <section className="border-y border-border bg-card">
@@ -220,25 +213,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Articles */}
-      {articles.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <h2 className="font-display text-2xl font-bold text-card-foreground">
-              Guides &amp; articles
-            </h2>
-            <Link href="/articles" className="text-sm font-semibold text-primary hover:underline">
-              View all &rarr;
-            </Link>
-          </div>
-          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
-            {articles.map((a) => (
-              <ArticleCard key={a.id} article={a} />
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* Newsletter CTA */}
       <section className="bg-primary/10">

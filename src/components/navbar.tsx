@@ -8,7 +8,7 @@ import { OPPORTUNITY_TYPES } from "@/lib/taxonomy";
 
 const primaryLinks = [
   { href: "/opportunities/scholarship", label: "Scholarships" },
-  { href: "/opportunities/job", label: "Jobs" },
+  { href: "/opportunities/conference", label: "Conferences" },
   { href: "/opportunities/grant", label: "Grants" },
   { href: "/opportunities/fellowship", label: "Fellowships" },
 ];

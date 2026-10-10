@@ -39,6 +39,7 @@ model Opportunity {
   @@index([region])
   @@index([status])
   @@index([deadline])
+  @@index([status, publishedAt])
 }
 
 model Article {
