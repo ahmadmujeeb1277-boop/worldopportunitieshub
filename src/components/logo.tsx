@@ -8,7 +8,7 @@ export function Logo({
   size?: "sm" | "md" | "lg";
   showTagline?: boolean;
 }) {
-  const dims = { sm: 28, md: 36, lg: 48 }[size];
+  const dims = { sm: 32, md: 46, lg: 60 }[size];
   const textSize = { sm: "text-lg", md: "text-xl", lg: "text-2xl" }[size];
 
   return (
