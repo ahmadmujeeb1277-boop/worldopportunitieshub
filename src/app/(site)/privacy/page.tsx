@@ -9,7 +9,7 @@ export default function PrivacyPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
       <h1 className="font-display text-3xl font-bold text-card-foreground">Privacy Policy</h1>
-      <p className="mt-2 text-sm text-muted-foreground">Last updated: September 2026</p>
+      <p className="mt-2 text-sm text-muted-foreground">Last updated: October 2026</p>
 
       <div className="prose prose-neutral mt-8 max-w-none prose-headings:font-display prose-a:text-primary">
         <h2>What we collect</h2>
@@ -37,6 +37,24 @@ export default function PrivacyPage() {
           Opportunity listings link to official third-party websites. Once you leave
           WorldOpportunitiesHub, that site&apos;s own privacy policy applies — we recommend
           reviewing it before submitting any personal information there.
+        </p>
+
+        <h2>Cookies and advertising</h2>
+        <p>
+          We use cookies and similar technologies for basic site functionality and analytics.
+          We may also work with third-party advertising vendors, including Google. Google and
+          its partners may use cookies or similar technologies to serve ads based on your prior
+          visits to this site or other websites. Google&apos;s use of advertising cookies enables
+          it and its partners to serve ads based on your visit to this site and/or other sites on
+          the Internet. You may opt out of personalized advertising by visiting{" "}
+          <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer">
+            Google Ads Settings
+          </a>
+          , or generally at{" "}
+          <a href="https://www.aboutads.info/choices" target="_blank" rel="noopener noreferrer">
+            www.aboutads.info/choices
+          </a>
+          .
         </p>
 
         <h2>Your choices</h2>
