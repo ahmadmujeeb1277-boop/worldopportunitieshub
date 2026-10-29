@@ -42,6 +42,20 @@ export default function AboutPage() {
           change — always verify specifics on the official page before you invest time in
           an application.
         </p>
+
+        <h2>How we verify opportunities</h2>
+        <p>Every listing on WorldOpportunitiesHub goes through the same process:</p>
+        <ol>
+          <li>We read the official announcement or programme page ourselves — we don&apos;t copy listings from other aggregators.</li>
+          <li>We check the stated deadline, funding type, and eligibility against that official page before publishing.</li>
+          <li>We write the summary and details in our own words. If a detail isn&apos;t confirmed on the official page, we say so rather than guess.</li>
+          <li>We revisit listings as deadlines approach, and mark them &ldquo;Closed&rdquo; once they pass rather than deleting them, so the page stays useful as a record.</li>
+        </ol>
+        <p>
+          We&apos;re a small, independent team — not every listing is reviewed on a fixed
+          schedule, so always treat the official page as the final word on eligibility and
+          deadlines.
+        </p>
       </div>
 
       <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">

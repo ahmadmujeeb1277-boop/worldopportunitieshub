@@ -17,7 +17,7 @@ import {
   levelLabel,
   fundingTypeLabel,
 } from "@/lib/taxonomy";
-import { formatDeadline } from "@/lib/format";
+import { formatDeadline, formatDate } from "@/lib/format";
 import { renderMarkdown } from "@/lib/markdown";
 import { OpportunityCard } from "@/components/opportunity-card";
 import { ApplyButton } from "@/components/apply-button";
@@ -30,15 +30,26 @@ interface PageProps {
   params: Promise<{ type: string; slug: string }>;
 }
 
+// Below this, a page is likely too thin to be worth indexing yet — kept
+// live for visitors, just not offered to search engines until it grows.
+const MIN_INDEXABLE_WORDS = 250;
+
+function wordCount(text: string | null | undefined): number {
+  if (!text) return 0;
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const opportunity = await opportunityBySlug(slug);
   if (!opportunity) return {};
   const path = `/opportunities/${opportunity.type}/${opportunity.slug}`;
+  const isThin = wordCount(opportunity.body) < MIN_INDEXABLE_WORDS;
   return {
     title: opportunity.title,
     description: opportunity.summary,
     alternates: { canonical: path },
+    ...(isThin ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       type: "article",
       title: opportunity.title,
@@ -106,15 +117,38 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
               iconSize={72}
             />
           </div>
-          <span
-            className={`rounded-full px-2.5 py-1 text-xs font-semibold ${typeTheme(opportunity.type).badge}`}
-          >
-            {opportunityTypeLabel(opportunity.type)}
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              className={`rounded-full px-2.5 py-1 text-xs font-semibold ${typeTheme(opportunity.type).badge}`}
+            >
+              {opportunityTypeLabel(opportunity.type)}
+            </span>
+            {isClosed && (
+              <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
+                Closed
+              </span>
+            )}
+          </div>
           <h1 className="mt-4 font-display text-3xl font-bold text-card-foreground sm:text-4xl">
             {opportunity.title}
           </h1>
           <p className="mt-3 text-lg text-muted-foreground">{opportunity.summary}</p>
+
+          <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+            <span>Last updated: {formatDate(opportunity.updatedAt)}</span>
+            <span aria-hidden="true">&middot;</span>
+            <span>
+              Source:{" "}
+              <a
+                href={opportunity.officialUrl}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="text-primary hover:underline"
+              >
+                {opportunity.organization} &#8599;
+              </a>
+            </span>
+          </p>
 
           {isClosed && (
             <p

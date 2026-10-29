@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalendarBlank, CaretRight, UserCircle } from "@phosphor-icons/react/dist/ssr";
-import { articleBySlug } from "@/lib/queries";
+import { articleBySlug, latestOpportunities } from "@/lib/queries";
 import { formatDate } from "@/lib/format";
-import { renderMarkdown } from "@/lib/markdown";
+import { renderMarkdownWithToc } from "@/lib/markdown";
 import { JsonLd } from "@/components/json-ld";
 import { CardImage } from "@/components/card-image";
+import { TableOfContents } from "@/components/table-of-contents";
+import { OpportunityCard } from "@/components/opportunity-card";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -44,8 +46,9 @@ export default async function ArticleDetailPage({ params }: PageProps) {
 
   // Content is authored only by the trusted admin account, so raw HTML from
   // our own markdown renderer is safe to inject without a sanitizer here.
-  const bodyHtml = renderMarkdown(article.body);
+  const { html: bodyHtml, toc } = renderMarkdownWithToc(article.body);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const related = await latestOpportunities(3);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
@@ -87,8 +90,10 @@ export default async function ArticleDetailPage({ params }: PageProps) {
         </span>
       </div>
 
+      <TableOfContents items={toc} />
+
       <div
-        className="prose prose-neutral mt-8 max-w-none prose-headings:font-display prose-a:text-primary"
+        className="prose prose-neutral mt-8 max-w-none prose-headings:font-display prose-a:text-primary prose-headings:scroll-mt-24"
         dangerouslySetInnerHTML={{ __html: bodyHtml }}
       />
 
@@ -101,6 +106,19 @@ export default async function ArticleDetailPage({ params }: PageProps) {
           Browse Opportunities
         </Link>
       </div>
+
+      {related.length > 0 && (
+        <section className="mt-16">
+          <h2 className="font-display text-2xl font-bold text-card-foreground">
+            Opportunities you might like
+          </h2>
+          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
+            {related.map((o) => (
+              <OpportunityCard key={o.id} opportunity={o} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

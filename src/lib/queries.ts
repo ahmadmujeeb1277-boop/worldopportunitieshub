@@ -107,9 +107,11 @@ export function opportunityBySlug(slug: string) {
   });
 }
 
+// Always shows currently-open opportunities, even when viewed from an
+// expired listing's page — a "related" expired listing isn't useful.
 export function relatedOpportunities(type: string, excludeId: string, take = 4) {
   return prisma.opportunity.findMany({
-    where: { type, status: "published", NOT: { id: excludeId } },
+    where: { type, status: "published", NOT: { id: excludeId }, ...stillOpen() },
     orderBy: { publishedAt: "desc" },
     take,
   });

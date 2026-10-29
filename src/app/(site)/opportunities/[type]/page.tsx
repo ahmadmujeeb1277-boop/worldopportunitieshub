@@ -25,10 +25,12 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { type } = await params;
   const label = opportunityTypeLabel(type);
+  const { total } = await searchOpportunities({ type, pageSize: 1 });
   return {
     title: label,
     description: `Browse verified ${label.toLowerCase()} from official sources around the world.`,
     alternates: { canonical: `/opportunities/${type}` },
+    ...(total === 0 ? { robots: { index: false, follow: true } } : {}),
   };
 }
 
