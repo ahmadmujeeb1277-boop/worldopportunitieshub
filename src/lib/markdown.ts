@@ -1,4 +1,4 @@
-import { marked, Marked } from "marked";
+import { marked, Marked, type Tokens } from "marked";
 import slugify from "slugify";
 
 export function renderMarkdown(source: string): string {
@@ -20,7 +20,7 @@ export function renderMarkdownWithToc(source: string): { html: string; toc: TocI
   const instance = new Marked();
   instance.use({
     renderer: {
-      heading(token: { tokens: Parameters<typeof marked.parseInline>[0]; depth: number }) {
+      heading(token: Tokens.Heading) {
         const inlineHtml = this.parser.parseInline(token.tokens);
         const text = inlineHtml.replace(/<[^>]+>/g, "").trim();
         let id = slugify(text, { lower: true, strict: true }) || `section-${toc.length + 1}`;
@@ -38,4 +38,36 @@ export function renderMarkdownWithToc(source: string): { html: string; toc: TocI
 
   const html = instance.parse(source, { async: false }) as string;
   return { html, toc };
+}
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+// Parses "Q: ...\nA: ..." pairs (possibly multi-line answers) into a flat
+// list. Lines that don't belong to a Q/A pair are ignored.
+export function parseFaqs(source: string | null | undefined): FaqItem[] {
+  if (!source) return [];
+  const lines = source.split(/\r?\n/);
+  const items: FaqItem[] = [];
+  let current: FaqItem | null = null;
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    const qMatch = line.match(/^Q[:.]\s*(.+)/i);
+    const aMatch = line.match(/^A[:.]\s*(.+)/i);
+
+    if (qMatch) {
+      if (current) items.push(current);
+      current = { question: qMatch[1].trim(), answer: "" };
+    } else if (aMatch && current) {
+      current.answer = current.answer ? `${current.answer} ${aMatch[1].trim()}` : aMatch[1].trim();
+    } else if (line && current && current.answer) {
+      current.answer += ` ${line}`;
+    }
+  }
+  if (current) items.push(current);
+
+  return items.filter((item) => item.question && item.answer);
 }

@@ -19,7 +19,13 @@ model Opportunity {
   type          String // scholarship | job | grant | fellowship | internship | competition | conference | exchange | training | workshop | volunteering | other
   status        String   @default("draft") // draft | published
   summary       String
-  body          String // long-form article body, stored as markdown
+  body          String // long-form article body, stored as markdown — the "Overview" section
+  eligibility     String? // markdown
+  benefitsFunding String? // markdown
+  requiredDocuments String? // markdown
+  howToApply      String? // markdown
+  importantDates  String? // markdown
+  faqs            String? // plain text, "Q: ...\nA: ..." pairs, parsed in code
   organization  String
   officialUrl   String
   country       String?

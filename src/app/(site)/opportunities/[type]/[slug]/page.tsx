@@ -18,11 +18,13 @@ import {
   fundingTypeLabel,
 } from "@/lib/taxonomy";
 import { formatDeadline, formatDate } from "@/lib/format";
-import { renderMarkdown } from "@/lib/markdown";
+import { renderMarkdown, renderMarkdownWithToc, parseFaqs } from "@/lib/markdown";
 import { OpportunityCard } from "@/components/opportunity-card";
 import { ApplyButton } from "@/components/apply-button";
 import { JsonLd } from "@/components/json-ld";
 import { CardImage } from "@/components/card-image";
+import { TableOfContents } from "@/components/table-of-contents";
+import { FaqList } from "@/components/faq-list";
 import { typeTheme } from "@/lib/type-theme";
 import { isPast } from "date-fns";
 
@@ -39,12 +41,32 @@ function wordCount(text: string | null | undefined): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
+function totalWordCount(opportunity: {
+  body: string;
+  eligibility: string | null;
+  benefitsFunding: string | null;
+  requiredDocuments: string | null;
+  howToApply: string | null;
+  importantDates: string | null;
+  faqs: string | null;
+}): number {
+  return [
+    opportunity.body,
+    opportunity.eligibility,
+    opportunity.benefitsFunding,
+    opportunity.requiredDocuments,
+    opportunity.howToApply,
+    opportunity.importantDates,
+    opportunity.faqs,
+  ].reduce((sum, text) => sum + wordCount(text), 0);
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const opportunity = await opportunityBySlug(slug);
   if (!opportunity) return {};
   const path = `/opportunities/${opportunity.type}/${opportunity.slug}`;
-  const isThin = wordCount(opportunity.body) < MIN_INDEXABLE_WORDS;
+  const isThin = totalWordCount(opportunity) < MIN_INDEXABLE_WORDS;
   return {
     title: opportunity.title,
     description: opportunity.summary,
@@ -73,11 +95,35 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
   prisma.opportunity.update({ where: { id: opportunity.id }, data: { viewCount: { increment: 1 } } }).catch(() => {});
 
   const related = await relatedOpportunities(opportunity.type, opportunity.id, 3);
-  // Content is authored only by the trusted admin account, so raw HTML from
-  // our own markdown renderer is safe to inject without a sanitizer here.
-  const bodyHtml = renderMarkdown(opportunity.body);
   const isClosed = opportunity.deadline ? isPast(opportunity.deadline) : false;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+  const extraSections = (
+    [
+      ["Eligibility", opportunity.eligibility],
+      ["Benefits / Funding", opportunity.benefitsFunding],
+      ["Required Documents", opportunity.requiredDocuments],
+      ["How to Apply", opportunity.howToApply],
+      ["Important Dates", opportunity.importantDates],
+    ] as [string, string | null][]
+  ).filter((s): s is [string, string] => Boolean(s[1] && s[1].trim()));
+
+  const faqs = parseFaqs(opportunity.faqs);
+  const hasExtras = extraSections.length > 0 || faqs.length > 0;
+
+  // Content is authored only by the trusted admin account, so raw HTML from
+  // our own markdown renderer is safe to inject without a sanitizer here.
+  // Old listings with no extra sections render exactly as before — only
+  // listings that use the new fields get the synthesized "Overview" heading
+  // and table of contents.
+  const { html: bodyHtml, toc } = hasExtras
+    ? renderMarkdownWithToc(
+        [`## Overview\n\n${opportunity.body}`, ...extraSections.map(([title, content]) => `## ${title}\n\n${content}`)].join(
+          "\n\n",
+        ),
+      )
+    : { html: renderMarkdown(opportunity.body), toc: [] };
+  const fullToc = faqs.length > 0 ? [...toc, { id: "faqs", text: "FAQs", level: 2 }] : toc;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -97,6 +143,19 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
           ],
         }}
       />
+      {faqs.length > 0 && (
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqs.map((f) => ({
+              "@type": "Question",
+              name: f.question,
+              acceptedAnswer: { "@type": "Answer", text: f.answer },
+            })),
+          }}
+        />
+      )}
       <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
         <Link href="/" className="hover:text-primary">Home</Link>
         <CaretRight size={12} aria-hidden="true" />
@@ -168,10 +227,21 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
             <ApplyButton href={opportunity.officialUrl} />
           </div>
 
+          <TableOfContents items={fullToc} />
+
           <div
-            className="prose prose-neutral mt-8 max-w-none prose-headings:font-display prose-a:text-primary"
+            className="prose prose-neutral mt-8 max-w-none prose-headings:font-display prose-headings:scroll-mt-24 prose-a:text-primary"
             dangerouslySetInnerHTML={{ __html: bodyHtml }}
           />
+
+          {faqs.length > 0 && (
+            <section id="faqs" className="mt-10 scroll-mt-24">
+              <h2 className="font-display text-2xl font-bold text-card-foreground">FAQs</h2>
+              <div className="mt-4">
+                <FaqList items={faqs} />
+              </div>
+            </section>
+          )}
 
           <p className="mt-8 rounded-lg border border-border bg-muted/40 p-4 text-xs text-muted-foreground">
             WorldOpportunitiesHub is an independent information platform. We are not

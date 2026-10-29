@@ -119,10 +119,105 @@ export function OpportunityForm({
           className="w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-sm focus:border-primary"
         />
         <p className="mt-1 text-xs text-muted-foreground">
-          Use Markdown headings (##) to structure Overview, Eligibility, and How to Apply sections.
+          This is the &ldquo;Overview&rdquo; section shown at the top of the page. Use the fields
+          below for Eligibility, Benefits, Documents, How to Apply, Dates, and FAQs — all optional.
         </p>
         <FieldError message={errors.body} />
       </div>
+
+      <details className="rounded-md border border-border">
+        <summary className="cursor-pointer select-none px-3 py-2.5 text-sm font-medium text-card-foreground">
+          Additional sections (optional, but recommended for a fuller page)
+        </summary>
+        <div className="space-y-4 border-t border-border p-3">
+          <div>
+            <label htmlFor="eligibility" className="mb-1 block text-sm font-medium text-card-foreground">
+              Eligibility
+            </label>
+            <textarea
+              id="eligibility"
+              name="eligibility"
+              rows={5}
+              defaultValue={opportunity?.eligibility ?? ""}
+              placeholder={"Who can apply — list the specific requirements (country, degree level, age, etc.)"}
+              className="w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-sm focus:border-primary"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="benefitsFunding" className="mb-1 block text-sm font-medium text-card-foreground">
+              Benefits / Funding
+            </label>
+            <textarea
+              id="benefitsFunding"
+              name="benefitsFunding"
+              rows={5}
+              defaultValue={opportunity?.benefitsFunding ?? ""}
+              placeholder={"What's covered — tuition, stipend, travel, accommodation, etc."}
+              className="w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-sm focus:border-primary"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="requiredDocuments" className="mb-1 block text-sm font-medium text-card-foreground">
+              Required Documents
+            </label>
+            <textarea
+              id="requiredDocuments"
+              name="requiredDocuments"
+              rows={5}
+              defaultValue={opportunity?.requiredDocuments ?? ""}
+              placeholder={"e.g. CV, transcripts, 2 recommendation letters, passport copy"}
+              className="w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-sm focus:border-primary"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="howToApply" className="mb-1 block text-sm font-medium text-card-foreground">
+              Step-by-Step How to Apply
+            </label>
+            <textarea
+              id="howToApply"
+              name="howToApply"
+              rows={6}
+              defaultValue={opportunity?.howToApply ?? ""}
+              placeholder={"1. Create an account on the official portal\n2. ...\n3. ..."}
+              className="w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-sm focus:border-primary"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="importantDates" className="mb-1 block text-sm font-medium text-card-foreground">
+              Important Dates
+            </label>
+            <textarea
+              id="importantDates"
+              name="importantDates"
+              rows={4}
+              defaultValue={opportunity?.importantDates ?? ""}
+              placeholder={"Applications open: ...\nDeadline: ...\nResults announced: ..."}
+              className="w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-sm focus:border-primary"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="faqs" className="mb-1 block text-sm font-medium text-card-foreground">
+              FAQs
+            </label>
+            <textarea
+              id="faqs"
+              name="faqs"
+              rows={6}
+              defaultValue={opportunity?.faqs ?? ""}
+              placeholder={"Q: Can I apply if I already graduated?\nA: Yes, within 2 years of graduation.\n\nQ: Is there an application fee?\nA: No, applications are free."}
+              className="w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-sm focus:border-primary"
+            />
+            <p className="mt-1 text-xs text-muted-foreground">
+              One question per line starting with &ldquo;Q:&rdquo;, followed by a line starting with &ldquo;A:&rdquo;.
+            </p>
+          </div>
+        </div>
+      </details>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
