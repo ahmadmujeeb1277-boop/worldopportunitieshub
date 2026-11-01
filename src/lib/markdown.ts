@@ -45,29 +45,41 @@ export interface FaqItem {
   answer: string;
 }
 
-// Parses "Q: ...\nA: ..." pairs (possibly multi-line answers) into a flat
-// list. Lines that don't belong to a Q/A pair are ignored.
+// Accepts two authoring styles so admin content doesn't silently vanish if
+// the "Q:/A:" convention isn't followed:
+//   1. "Q: ...\nA: ..." pairs (possibly multi-line answers)
+//   2. A question on its own line wrapped in **bold**, with the answer as
+//      the plain-text line(s) that follow (common when pasting FAQs from a
+//      source that already uses bold-question formatting)
 export function parseFaqs(source: string | null | undefined): FaqItem[] {
   if (!source) return [];
   const lines = source.split(/\r?\n/);
   const items: FaqItem[] = [];
   let current: FaqItem | null = null;
 
+  const flush = () => {
+    if (current && current.question && current.answer) items.push(current);
+  };
+
   for (const rawLine of lines) {
     const line = rawLine.trim();
     const qMatch = line.match(/^Q[:.]\s*(.+)/i);
     const aMatch = line.match(/^A[:.]\s*(.+)/i);
+    const boldMatch = line.match(/^\*\*(.+?)\*\*$/);
 
     if (qMatch) {
-      if (current) items.push(current);
+      flush();
       current = { question: qMatch[1].trim(), answer: "" };
+    } else if (boldMatch) {
+      flush();
+      current = { question: boldMatch[1].trim(), answer: "" };
     } else if (aMatch && current) {
       current.answer = current.answer ? `${current.answer} ${aMatch[1].trim()}` : aMatch[1].trim();
-    } else if (line && current && current.answer) {
-      current.answer += ` ${line}`;
+    } else if (line && current) {
+      current.answer = current.answer ? `${current.answer} ${line}` : line;
     }
   }
-  if (current) items.push(current);
+  flush();
 
-  return items.filter((item) => item.question && item.answer);
+  return items;
 }
