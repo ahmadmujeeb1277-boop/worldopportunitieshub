@@ -3,7 +3,6 @@ import type { Opportunity } from "@prisma/client";
 import { typeTheme } from "@/lib/type-theme";
 import { KindIcon } from "./card-image";
 import { OpportunityCard } from "./opportunity-card";
-import { OpportunityRow } from "./opportunity-row";
 
 // One homepage block per opportunity type: colored heading, one large lead
 // card, and a short list of the next newest underneath/beside it.
@@ -57,7 +56,7 @@ export function CategorySection({
                   key={o.id}
                   className={rest.length >= 3 ? "flex flex-1 [&>a]:w-full" : "[&>a]:w-full"}
                 >
-                  <OpportunityRow opportunity={o} />
+                  <OpportunityCard opportunity={o} compact />
                 </div>
               ))}
             </div>

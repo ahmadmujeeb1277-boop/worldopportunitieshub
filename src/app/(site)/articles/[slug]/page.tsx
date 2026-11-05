@@ -33,6 +33,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       modifiedTime: article.updatedAt.toISOString(),
       authors: [article.author],
     },
+    twitter: {
+      card: "summary_large_image",
+      images: [article.coverImage ?? "/og-default.jpg"],
+    },
   };
 }
 

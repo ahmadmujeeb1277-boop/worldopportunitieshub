@@ -95,6 +95,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       publishedTime: opportunity.publishedAt?.toISOString(),
       modifiedTime: opportunity.updatedAt.toISOString(),
     },
+    twitter: {
+      card: "summary_large_image",
+      images: [opportunity.coverImage ?? "/og-default.jpg"],
+    },
   };
 }
 
