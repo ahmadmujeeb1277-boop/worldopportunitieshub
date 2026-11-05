@@ -6,10 +6,10 @@ export function ApplyButton({ href }: { href: string }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer nofollow"
-      className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-base font-semibold text-[var(--color-on-accent)] transition-opacity hover:opacity-90"
+      className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-accent px-6 py-4 text-lg font-bold text-[var(--color-on-accent)] transition-all hover:-translate-y-0.5 hover:opacity-90 hover:shadow-md"
     >
-      Apply on Official Website
-      <ArrowSquareOut size={18} aria-hidden="true" />
+      Simply Apply
+      <ArrowSquareOut size={20} aria-hidden="true" />
     </a>
   );
 }

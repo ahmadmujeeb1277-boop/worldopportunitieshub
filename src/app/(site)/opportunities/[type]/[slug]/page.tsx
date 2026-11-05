@@ -8,6 +8,11 @@ import {
   GraduationCap,
   HandCoins,
   CaretRight,
+  Info,
+  CheckCircle,
+  FileText,
+  PaperPlaneTilt,
+  Question,
 } from "@phosphor-icons/react/dist/ssr";
 import { opportunityBySlug, relatedOpportunities } from "@/lib/queries";
 import { prisma } from "@/lib/prisma";
@@ -18,15 +23,24 @@ import {
   fundingTypeLabel,
 } from "@/lib/taxonomy";
 import { formatDeadline, formatDate } from "@/lib/format";
-import { renderMarkdown, renderMarkdownWithToc, parseFaqs } from "@/lib/markdown";
+import { renderMarkdownWithToc, parseFaqs } from "@/lib/markdown";
 import { OpportunityCard } from "@/components/opportunity-card";
 import { ApplyButton } from "@/components/apply-button";
 import { JsonLd } from "@/components/json-ld";
 import { CardImage } from "@/components/card-image";
 import { TableOfContents } from "@/components/table-of-contents";
 import { FaqList } from "@/components/faq-list";
+import { SectionBlock } from "@/components/section-block";
 import { typeTheme } from "@/lib/type-theme";
 import { isPast } from "date-fns";
+
+const SECTION_ICONS = {
+  eligibility: CheckCircle,
+  benefitsFunding: HandCoins,
+  requiredDocuments: FileText,
+  howToApply: PaperPlaneTilt,
+  importantDates: CalendarBlank,
+} as const;
 
 interface PageProps {
   params: Promise<{ type: string; slug: string }>;
@@ -98,32 +112,41 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
   const isClosed = opportunity.deadline ? isPast(opportunity.deadline) : false;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-  const extraSections = (
-    [
-      ["Eligibility", opportunity.eligibility],
-      ["Benefits / Funding", opportunity.benefitsFunding],
-      ["Required Documents", opportunity.requiredDocuments],
-      ["How to Apply", opportunity.howToApply],
-      ["Important Dates", opportunity.importantDates],
-    ] as [string, string | null][]
-  ).filter((s): s is [string, string] => Boolean(s[1] && s[1].trim()));
-
-  const faqs = parseFaqs(opportunity.faqs);
-  const hasExtras = extraSections.length > 0 || faqs.length > 0;
+  const theme = typeTheme(opportunity.type);
 
   // Content is authored only by the trusted admin account, so raw HTML from
   // our own markdown renderer is safe to inject without a sanitizer here.
-  // Old listings with no extra sections render exactly as before — only
-  // listings that use the new fields get the synthesized "Overview" heading
-  // and table of contents.
-  const { html: bodyHtml, toc } = hasExtras
-    ? renderMarkdownWithToc(
-        [`## Overview\n\n${opportunity.body}`, ...extraSections.map(([title, content]) => `## ${title}\n\n${content}`)].join(
-          "\n\n",
-        ),
-      )
-    : { html: renderMarkdown(opportunity.body), toc: [] };
-  const fullToc = faqs.length > 0 ? [...toc, { id: "faqs", text: "FAQs", level: 2 }] : toc;
+  // Each section renders (and gets an id) on its own, so the heading is a
+  // real styled JSX element, not something fished out of the markdown.
+  const overview = renderMarkdownWithToc(opportunity.body);
+  const sections = (
+    [
+      ["eligibility", "Eligibility", opportunity.eligibility],
+      ["benefitsFunding", "Benefits / Funding", opportunity.benefitsFunding],
+      ["requiredDocuments", "Required Documents", opportunity.requiredDocuments],
+      ["howToApply", "How to Apply", opportunity.howToApply],
+      ["importantDates", "Important Dates", opportunity.importantDates],
+    ] as [keyof typeof SECTION_ICONS, string, string | null][]
+  )
+    .filter((s): s is [keyof typeof SECTION_ICONS, string, string] => Boolean(s[2] && s[2].trim()))
+    .map(([key, title, content]) => ({
+      key,
+      title,
+      icon: SECTION_ICONS[key],
+      ...renderMarkdownWithToc(content),
+    }));
+
+  const faqs = parseFaqs(opportunity.faqs);
+
+  const fullToc = [
+    { id: "overview", text: "Overview", level: 2 as const },
+    ...overview.toc.map((t) => ({ ...t, level: 3 as const })),
+    ...sections.flatMap((s) => [
+      { id: s.key, text: s.title, level: 2 as const },
+      ...s.toc.map((t) => ({ ...t, level: 3 as const })),
+    ]),
+    ...(faqs.length > 0 ? [{ id: "faqs", text: "FAQs", level: 2 as const }] : []),
+  ];
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -229,15 +252,22 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
 
           <TableOfContents items={fullToc} />
 
-          <div
-            className="prose prose-neutral mt-8 max-w-none prose-headings:font-display prose-headings:scroll-mt-24 prose-a:text-primary"
-            dangerouslySetInnerHTML={{ __html: bodyHtml }}
-          />
+          <SectionBlock id="overview" title="Overview" icon={Info} theme={theme} html={overview.html} />
+
+          {sections.map((s) => (
+            <SectionBlock key={s.key} id={s.key} title={s.title} icon={s.icon} theme={theme} html={s.html} />
+          ))}
 
           {faqs.length > 0 && (
-            <section id="faqs" className="mt-10 scroll-mt-24">
-              <h2 className="font-display text-2xl font-bold text-card-foreground">FAQs</h2>
-              <div className="mt-4">
+            <section id="faqs" className="mt-12 scroll-mt-24">
+              <div className="flex items-center gap-3">
+                <span className={`h-1.5 w-8 shrink-0 rounded-full ${theme.rule}`} aria-hidden="true" />
+                <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${theme.iconWrap}`}>
+                  <Question size={20} weight="bold" aria-hidden="true" />
+                </span>
+                <h2 className="font-display text-2xl font-bold text-card-foreground sm:text-3xl">FAQs</h2>
+              </div>
+              <div className="mt-5">
                 <FaqList items={faqs} />
               </div>
             </section>
