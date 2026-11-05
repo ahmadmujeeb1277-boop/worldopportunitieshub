@@ -18,8 +18,20 @@ simple English, do one thing at a time, and show results before moving on.
   still uses Turbopack; the **production build uses webpack** (see Hosting below). Next 16 renamed
   middleware to **proxy** (`src/proxy.ts`). Check `node_modules/next/dist/docs/` before using
   framework APIs (see AGENTS.md).
-- Prisma 6 + Postgres on **Neon**, paid "Build" plan — always-on compute, no more idle-suspend
-  cold-start failures (pooled connection with `connect_timeout=15`).
+- Prisma 6 + **MySQL (MariaDB 11.8) on Hostinger** (`srv487.hstgr.io`), moved off Neon Postgres on
+  2026-11-05. Every long-content field (`body`, `summary`, `eligibility`, `benefitsFunding`,
+  `requiredDocuments`, `howToApply`, `importantDates`, `faqs`, `officialUrl`, `coverImage`, and
+  Article's `body`/`excerpt`) has `@db.Text` — MySQL's default `VARCHAR(191)` silently truncates
+  otherwise. Schema is applied with `prisma db push`, not `migrate dev`/`deploy` — the shared-
+  hosting DB user has no permission to create the shadow database migrate needs, so there's no
+  `prisma/migrations` folder anymore. Remote access is controlled in hPanel → Databases → Remote
+  MySQL; the live app's own outbound IP could not be determined (the DB user lacks privilege to
+  see other sessions in `SHOW PROCESSLIST`, even under the same username), so access is currently
+  set to "Any Host" — ask Hostinger support for a fixed Node.js Web App egress IP/range if this
+  needs tightening later. A full data export taken just before the move lives at
+  `neon_export_backup_2026-11-05.json` in the project root (gitignored, not a secret but not code
+  either) — keep it until the MySQL move has run cleanly for a few days before deleting the Neon
+  project.
 - Admin auth: own email/password, bcryptjs + `jose` JWT cookie (`src/lib/auth.ts`,
   `src/lib/session-token.ts`); `/admin/*` is guarded by `src/proxy.ts`.
 - Images: **Vercel Blob** (store `worldopportunitieshub-images`), accessed via a standalone
@@ -33,11 +45,11 @@ simple English, do one thing at a time, and show results before moving on.
   around Oct 2026 for the failed-build investigation). Domain `worldopportunitieshub.com` and
   hosting are both on Hostinger now, same account. Vercel is no longer used for hosting at all —
   the old Vercel project can be safely deleted (nothing on the live site depends on it, only the
-  Blob store survives independently, see above). Database is **Neon Postgres**, now on the paid
-  "Build" plan (250 compute-hours/month, always-on compute) after the free tier's 100-hour quota
-  was exhausted once. Analytics: GA4 via `src/components/google-analytics.tsx` (public pages
-  only). Google Search Console is verified by a TXT record in Hostinger DNS (same DNS zone as the
-  domain, now self-managed since domain + hosting are the same account).
+  Blob store survives independently, see above). Database is **MySQL, also on Hostinger, same
+  account** (see Stack above) — domain, hosting, and database are now all one account/bill.
+  Analytics: GA4 via `src/components/google-analytics.tsx` (public pages only). Google Search
+  Console is verified by a TXT record in Hostinger DNS (same DNS zone as the domain, now self-
+  managed since domain + hosting are the same account).
 - AdSense: site verification script is in `src/components/google-adsense.tsx` (a plain `<script>`
   tag, not `next/script`, so it's present in the server-rendered `<head>` — AdSense's crawler
   checks for the literal tag, which `next/script`'s `beforeInteractive` strategy does NOT produce
@@ -54,8 +66,9 @@ simple English, do one thing at a time, and show results before moving on.
   south-america, oceania, middle-east, global. level: high-school, undergraduate, masters, phd,
   postdoc, professional, any. fundingType: fully-funded, partially-funded, paid, unpaid,
   unspecified.
-- Migrations are Postgres-only (`prisma/migrations`). The shared Neon DB is the **production**
-  database, so local dev also reads and writes production data. Be careful with tests.
+- No `prisma/migrations` folder — schema changes are applied with `prisma db push` (see Stack
+  above). The shared Hostinger MySQL DB is the **production** database, so local dev also reads
+  and writes production data. Be careful with tests.
 
 ## Site structure
 - Public pages in `src/app/(site)/`; admin in `src/app/admin/(dashboard)/`; server actions in
@@ -105,7 +118,7 @@ simple English, do one thing at a time, and show results before moving on.
   Take a second screenshot when the first looks blank (lazy images).
 
 ## Environment variables (names only; values are in `.env` and Hostinger's env panel)
-`DATABASE_URL` (Neon pooled, with `connect_timeout=15`), `SESSION_SECRET`, `ADMIN_EMAIL`,
+`DATABASE_URL` (MySQL on Hostinger, `mysql://...@srv487.hstgr.io:3306/...`), `SESSION_SECRET`, `ADMIN_EMAIL`,
 `ADMIN_PASSWORD` (only used by `prisma/seed.ts` to create the admin row; changing it in an env var
 does nothing until the seed is re-run), `NEXT_PUBLIC_SITE_URL` (now `https://worldopportunitieshub.com`),
 `BLOB_READ_WRITE_TOKEN` (the active Blob credential — works independent of any hosting provider).
@@ -114,7 +127,13 @@ not needed on Hostinger.
 
 ## Deploying changes
 Push to `master` on GitHub — Hostinger's Web App auto-deploys from it (same as Vercel used to).
-Check the deploy under hPanel → Websites → the Web App → Deployments. Database migrations are
-**not** run automatically by the build — run `npx prisma migrate dev --name <name>` locally
-first (applies directly to the shared production Neon DB, same as before the Hostinger move),
-commit the generated migration file, then push.
+Check the deploy under hPanel → Websites → the Web App → Deployments. **Changing an environment
+variable in hPanel also triggers an auto-deploy by itself** — found this the hard way moving to
+MySQL: changed `DATABASE_URL` before the matching code was pushed, and Hostinger redeployed the
+old (Postgres-expecting) code against the new connection string immediately, breaking the site
+for a few minutes. When an env var change and a code change both need to land together, push the
+code **first** (or immediately after), don't leave a gap.
+
+Schema changes are **not** run automatically by the build — run `npx prisma db push` locally
+first (applies directly to the shared production MySQL DB), then commit and push the updated
+`schema.prisma`.
