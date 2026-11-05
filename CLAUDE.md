@@ -61,11 +61,18 @@ simple English, do one thing at a time, and show results before moving on.
   isFeatured, viewCount, publishedAt. Index on (status, publishedAt).
 - `Article`, `Tag` (+ join tables), `AdminUser`, `NewsletterSubscriber`.
 - Types/levels/regions/funding are plain strings validated in code: `src/lib/taxonomy.ts`.
-  type: scholarship, job, grant, fellowship, internship, competition, conference, exchange,
-  training, workshop, volunteering, other. region: africa, asia, europe, north-america,
+  type: scholarship, job, grant, fellowship, internship, competition, conference, **course**,
+  exchange, training, workshop, volunteering, other. region: africa, asia, europe, north-america,
   south-america, oceania, middle-east, global. level: high-school, undergraduate, masters, phd,
   postdoc, professional, any. fundingType: fully-funded, partially-funded, paid, unpaid,
   unspecified.
+- **Adding a new opportunity type** (done once for "course", 2026-11): add it to `OPPORTUNITY_TYPES`
+  in `taxonomy.ts` and a matching entry in `type-theme.ts` (color) and `card-image.tsx` (icon) — the
+  admin dropdown, sitemap, and category-page SEO metadata all come for free since they iterate that
+  same array. **Gotcha:** `/opportunities/[type]/page.tsx` uses `generateStaticParams`, so a brand
+  new type's category page 404s until the *next* production build actually runs — it's not visible
+  immediately even though the push succeeded. Confirmed on Hostinger: the page started working only
+  once a subsequent deploy rebuilt the static params list, not the same deploy that added the type.
 - No `prisma/migrations` folder — schema changes are applied with `prisma db push` (see Stack
   above). The shared Hostinger MySQL DB is the **production** database, so local dev also reads
   and writes production data. Be careful with tests.
@@ -75,13 +82,15 @@ simple English, do one thing at a time, and show results before moving on.
   `src/app/actions/`; reusable bits in `src/components/`; queries in `src/lib/queries.ts`.
 - Homepage order (set by the owner): hero video, Latest Opportunities (published in the last
   72 hours, any category, queried in the DB), Scholarships, Conferences, Fellowships, Jobs,
-  Grants, Guides & Articles, then the newsletter signup. Navbar: Scholarships, Conferences,
-  Grants, Fellowships, More (all other types incl. Jobs), Articles, About.
+  Grants, **Courses**, Guides & Articles, then the newsletter signup. Navbar: Scholarships,
+  Conferences, Grants, Fellowships, More (all other types incl. Jobs), Articles, About. Hero pills
+  and the footer's category list both show `OPPORTUNITY_TYPES.slice(0, 7)` — kept in sync
+  deliberately (2026-11 redesign: Conferences was missing from both because the slice used to stop
+  at 6).
 - Expired listings (deadline passed) are hidden from lists but the detail page stays up with a
-  "deadline passed" notice. Sitemap is dynamic. Canonical URLs + JSON-LD are in place.
-- Theme: clean white. Primary green `#047857` (text-safe on white), amber for Featured/Apply,
-  and one color per opportunity type in `src/lib/type-theme.ts`. Central tokens in
-  `src/app/globals.css`. Fonts: Inter + Playfair Display.
+  "deadline passed" notice (plus a visible "Closed" badge next to the category pill) and related-
+  opportunity suggestions filtered to currently-open listings only. Sitemap is dynamic. Canonical
+  URLs + JSON-LD are in place.
 - Hero: muted looping video (`public/video/students-hero.mp4`) on desktop, static poster on
   mobile / reduced motion. White headline text sits on a tight dark chip.
 - Footer: WhatsApp Channel banner, big Facebook/Instagram/LinkedIn buttons
@@ -91,6 +100,45 @@ simple English, do one thing at a time, and show results before moving on.
   higher-resolution original would be better if they can supply one.
 - Admin image uploader (`src/components/admin/image-upload.tsx`) offers Fill (drag/zoom) or Fit
   whole image, saves 1280x720 WebP.
+
+## Design system (2026-11 redesign)
+- **Fonts**: Inter (body/UI) + Playfair Display (display headings) — kept from the original brand,
+  used with more deliberate size contrast now.
+- **Ground**: white. **Ink**: near-black. **Primary**: green `#047857` (brand/trust, text-safe on
+  white). **Accent**: amber `#D97706` — the one color used for every primary action ("Simply
+  Apply", search, hero CTA), nowhere else.
+- **Category colors** (`src/lib/type-theme.ts`, one hue per type, each a `badge`/`iconWrap`/`band`/
+  `rule`/`seeMore`/`hoverBorder` set): scholarship=emerald, job=sky, grant=amber, fellowship=violet,
+  internship=rose, competition=orange, conference=indigo, **course=blue**, exchange=teal,
+  training=cyan, workshop=lime, volunteering=pink. Adding a type needs a new entry here (see the
+  taxonomy gotcha above) — pick a hue not already used.
+- **Cards** (`src/components/opportunity-card.tsx`): one component, two densities. Default is the
+  full card (16:9 image, tag, title, excerpt, deadline, funding badge). `compact` prop swaps the
+  hero image for a small thumbnail and tightens type, for secondary slots like a homepage category's
+  side list — but keeps every field the full card has. There is no second card component anymore
+  (the old `OpportunityRow`, which was missing the tag and funding badge, was removed in favor of
+  this).
+- **Opportunity-page sections** (`src/components/section-block.tsx`): Overview, Eligibility,
+  Benefits/Funding, Required Documents, How to Apply, Important Dates each render as their own
+  block — a colored bar + icon chip (same visual language as the homepage's `CategorySection`,
+  colored by the listing's own category) + a bold heading, not a single undifferentiated wall of
+  prose. "Overview" (the `body` field) always gets this treatment now, even on the 92+ older
+  listings that only use `body` — this was a deliberate change in the 2026-11 redesign, not a bug.
+- **Markdown pseudo-headings** (`src/lib/markdown.ts`, `promotePseudoHeadings`): a lot of existing
+  content was authored with a bold-only line standing in for a subheading (and occasionally an
+  italic-only line for a smaller one) instead of real `##`/`###` markdown. Both `renderMarkdown` and
+  `renderMarkdownWithToc` now auto-promote a line that is *entirely* `**bold**` to an H3, and
+  *entirely* `*italic*`/`_italic_` to an H4, before handing the text to `marked`. This runs on every
+  render, not stored — no database changes. Side effect worth knowing: this is also what made the
+  articles' table of contents start working (they had zero real headings before, just bold text).
+  `decodeHtmlEntities` in the same file fixes a related bug where an apostrophe in a heading showed
+  up as literal `&#39;` in the table of contents.
+- **Button label**: "Apply on Official Website" → **"Simply Apply"** (`src/components/apply-
+  button.tsx`), same behavior (`target="_blank"`, `rel="noopener noreferrer nofollow"`).
+- **Social images**: `twitter:image` is now set explicitly alongside `og:image` on opportunity and
+  article pages, both from the listing's own cover image. Before this it silently inherited the
+  root layout's generic `/og-default.jpg` on every single page, since Next doesn't auto-derive
+  `twitter.images` from `openGraph.images`.
 
 ## How content is added
 - Owner uses `/admin` for listings and articles. When the owner pastes a source article link we
