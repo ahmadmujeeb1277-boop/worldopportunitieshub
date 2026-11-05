@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -11,6 +11,9 @@ datasource db {
 // Prisma enums) on purpose — SQLite has no native enum support, and this way
 // the schema moves to Postgres later without a migration rewrite. Allowed
 // values are enforced in code via src/lib/taxonomy.ts + zod, not the DB.
+//
+// @db.Text on long content fields: MySQL's default String column
+// (VARCHAR(191)) would silently truncate markdown bodies, FAQs, etc.
 
 model Opportunity {
   id            String   @id @default(cuid())
@@ -18,22 +21,22 @@ model Opportunity {
   slug          String   @unique
   type          String // scholarship | job | grant | fellowship | internship | competition | conference | exchange | training | workshop | volunteering | other
   status        String   @default("draft") // draft | published
-  summary       String
-  body          String // long-form article body, stored as markdown — the "Overview" section
-  eligibility     String? // markdown
-  benefitsFunding String? // markdown
-  requiredDocuments String? // markdown
-  howToApply      String? // markdown
-  importantDates  String? // markdown
-  faqs            String? // plain text, "Q: ...\nA: ..." pairs, parsed in code
+  summary       String   @db.Text
+  body          String   @db.Text // long-form article body, stored as markdown — the "Overview" section
+  eligibility     String? @db.Text // markdown
+  benefitsFunding String? @db.Text // markdown
+  requiredDocuments String? @db.Text // markdown
+  howToApply      String? @db.Text // markdown
+  importantDates  String? @db.Text // markdown
+  faqs            String? @db.Text // plain text, "Q: ...\nA: ..." pairs, parsed in code
   organization  String
-  officialUrl   String
+  officialUrl   String   @db.Text
   country       String?
   region        String // africa | asia | europe | north-america | south-america | oceania | middle-east | global
   level         String? // high-school | undergraduate | masters | phd | postdoc | professional | any
   fundingType   String // fully-funded | partially-funded | paid | unpaid | unspecified
   deadline      DateTime?
-  coverImage    String?
+  coverImage    String?  @db.Text
   isFeatured    Boolean  @default(false)
   viewCount     Int      @default(0)
   publishedAt   DateTime?
@@ -52,9 +55,9 @@ model Article {
   id          String   @id @default(cuid())
   title       String
   slug        String   @unique
-  excerpt     String
-  body        String
-  coverImage  String?
+  excerpt     String   @db.Text
+  body        String   @db.Text
+  coverImage  String?  @db.Text
   author      String   @default("WorldOpportunitiesHub Team")
   status      String   @default("draft") // draft | published
   publishedAt DateTime?
