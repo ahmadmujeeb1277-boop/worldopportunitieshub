@@ -68,6 +68,14 @@ const themes: Record<string, TypeTheme> = {
     seeMore: "border-indigo-200 text-indigo-800 hover:bg-indigo-100",
     hoverBorder: "hover:border-indigo-400",
   },
+  course: {
+    badge: "bg-blue-100 text-blue-800",
+    iconWrap: "bg-blue-100 text-blue-700",
+    band: "bg-blue-50/60",
+    rule: "bg-blue-600",
+    seeMore: "border-blue-200 text-blue-800 hover:bg-blue-100",
+    hoverBorder: "hover:border-blue-400",
+  },
   exchange: {
     badge: "bg-teal-100 text-teal-800",
     iconWrap: "bg-teal-100 text-teal-700",

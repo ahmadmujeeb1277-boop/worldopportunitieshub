@@ -6,6 +6,7 @@ export const OPPORTUNITY_TYPES = [
   { value: "internship", label: "Internships" },
   { value: "competition", label: "Competitions" },
   { value: "conference", label: "Conferences" },
+  { value: "course", label: "Courses" },
   { value: "exchange", label: "Exchange Programs" },
   { value: "training", label: "Training Programs" },
   { value: "workshop", label: "Workshops" },

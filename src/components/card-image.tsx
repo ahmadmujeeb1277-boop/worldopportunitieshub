@@ -1,5 +1,6 @@
 import {
   Briefcase,
+  BookOpen,
   ChalkboardTeacher,
   Compass,
   GraduationCap,
@@ -28,6 +29,7 @@ const kindIcons: Record<string, IconComponent> = {
   internship: Rocket,
   competition: Trophy,
   conference: UsersThree,
+  course: BookOpen,
   exchange: Globe,
   training: ChalkboardTeacher,
   workshop: Wrench,

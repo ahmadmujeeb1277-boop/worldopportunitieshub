@@ -24,7 +24,7 @@ export function Footer() {
           <div>
             <h3 className="text-sm font-semibold text-card-foreground">Opportunities</h3>
             <ul className="mt-4 space-y-2.5">
-              {OPPORTUNITY_TYPES.slice(0, 6).map((t) => (
+              {OPPORTUNITY_TYPES.slice(0, 7).map((t) => (
                 <li key={t.value}>
                   <Link
                     href={`/opportunities/${t.value}`}

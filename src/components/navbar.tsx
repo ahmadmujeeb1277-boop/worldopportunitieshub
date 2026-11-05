@@ -133,6 +133,15 @@ export function Navbar() {
             ))}
             <li className="mt-1 border-t border-border pt-1">
               <Link
+                href="/search"
+                className="block rounded-md px-3 py-2.5 text-base font-medium text-card-foreground/85 hover:bg-muted"
+                onClick={() => setMobileOpen(false)}
+              >
+                Search
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/articles"
                 className="block rounded-md px-3 py-2.5 text-base font-medium text-card-foreground/85 hover:bg-muted"
                 onClick={() => setMobileOpen(false)}

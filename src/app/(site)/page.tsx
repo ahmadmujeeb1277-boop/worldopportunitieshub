@@ -21,6 +21,7 @@ const SECTIONS = [
   { type: "fellowship", title: "Fellowships", blurb: "Research and leadership fellowships around the world." },
   { type: "job", title: "Jobs", blurb: "Open roles at universities, NGOs and international bodies." },
   { type: "grant", title: "Grants", blurb: "Funding for projects, research and organizations." },
+  { type: "course", title: "Courses", blurb: "Free and paid courses to build real, certified skills." },
 ] as const;
 
 export const metadata: Metadata = {
@@ -106,7 +107,7 @@ export default async function HomePage() {
           </form>
 
           <div className="mt-6 flex flex-wrap justify-center gap-2 text-sm">
-            {OPPORTUNITY_TYPES.slice(0, 6).map((t) => (
+            {OPPORTUNITY_TYPES.slice(0, 7).map((t) => (
               <Link
                 key={t.value}
                 href={`/opportunities/${t.value}`}
