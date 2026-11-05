@@ -47,3 +47,6 @@ next-env.d.ts
 
 # Claude Code local tooling config (skills, etc.) — not part of the app
 /.claude/
+
+# Local data backups — not code, shouldn't be in a public repo
+neon_export_backup_*.json
