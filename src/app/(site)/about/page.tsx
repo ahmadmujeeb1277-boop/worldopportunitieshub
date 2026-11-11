@@ -56,6 +56,12 @@ export default function AboutPage() {
           schedule, so always treat the official page as the final word on eligibility and
           deadlines.
         </p>
+
+        <h2>Who writes this</h2>
+        <p>
+          Every listing and guide on WorldOpportunitiesHub is researched, written, and
+          verified by <strong>Jabeen</strong>, following the process above.
+        </p>
       </div>
 
       <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
