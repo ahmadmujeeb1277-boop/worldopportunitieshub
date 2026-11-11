@@ -22,8 +22,6 @@ export function ArticleCard({ article }: { article: Article }) {
         <span className="flex items-center gap-1 text-xs text-muted-foreground">
           <CalendarBlank size={14} aria-hidden="true" />
           {formatDate(article.publishedAt)}
-          <span aria-hidden="true">&middot;</span>
-          {article.author}
         </span>
         <h3 className="mt-2 line-clamp-2 font-display text-lg font-semibold text-card-foreground group-hover:text-primary">
           {article.title}

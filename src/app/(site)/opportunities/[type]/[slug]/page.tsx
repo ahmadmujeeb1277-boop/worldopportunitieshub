@@ -252,8 +252,6 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
           <p className="mt-3 text-lg text-muted-foreground">{opportunity.summary}</p>
 
           <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-            <span>By Jabeen</span>
-            <span aria-hidden="true">&middot;</span>
             <span>
               Last updated:{" "}
               {formatDate(opportunity.contentUpdatedAt ?? opportunity.publishedAt ?? opportunity.updatedAt)}
@@ -318,6 +316,8 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
             affiliated with or endorsed by {opportunity.organization}. Always verify
             details on the official website before applying.
           </p>
+
+          <p className="mt-4 text-sm text-muted-foreground">Published by Jabeen</p>
         </article>
 
         <aside className="lg:col-span-1">

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarBlank, CaretRight, UserCircle } from "@phosphor-icons/react/dist/ssr";
+import { CalendarBlank, CaretRight } from "@phosphor-icons/react/dist/ssr";
 import { articleBySlug, latestOpportunities } from "@/lib/queries";
 import { formatDate } from "@/lib/format";
 import { renderMarkdownWithToc } from "@/lib/markdown";
@@ -85,10 +85,6 @@ export default async function ArticleDetailPage({ params }: PageProps) {
 
       <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
         <span className="flex items-center gap-1.5">
-          <UserCircle size={16} aria-hidden="true" />
-          {article.author}
-        </span>
-        <span className="flex items-center gap-1.5">
           <CalendarBlank size={16} aria-hidden="true" />
           {formatDate(article.publishedAt)}
         </span>
@@ -100,6 +96,8 @@ export default async function ArticleDetailPage({ params }: PageProps) {
         className="prose prose-neutral mt-8 max-w-none prose-headings:font-display prose-a:text-primary prose-headings:scroll-mt-24"
         dangerouslySetInnerHTML={{ __html: bodyHtml }}
       />
+
+      <p className="mt-8 text-sm text-muted-foreground">Published by Jabeen</p>
 
       <div className="mt-12 rounded-xl border border-border bg-primary/10 p-6 text-center">
         <p className="font-semibold text-card-foreground">Ready to find your next opportunity?</p>

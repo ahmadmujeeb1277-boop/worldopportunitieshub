@@ -83,7 +83,7 @@ export function OpportunityCard({
           </span>
           {opportunity.publishedAt && (
             <span className="text-xs text-muted-foreground">
-              Posted {formatDate(opportunity.publishedAt)} &middot; Jabeen
+              Posted {formatDate(opportunity.publishedAt)}
             </span>
           )}
         </div>
