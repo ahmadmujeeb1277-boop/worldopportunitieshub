@@ -90,6 +90,7 @@ export async function createOpportunity(
       slug,
       deadline: deadline ? new Date(deadline) : null,
       publishedAt: data.status === "published" ? new Date() : null,
+      contentUpdatedAt: new Date(),
     },
   });
 
@@ -129,6 +130,7 @@ export async function updateOpportunity(
       deadline: deadline ? new Date(deadline) : null,
       publishedAt:
         data.status === "published" ? (existing.publishedAt ?? new Date()) : existing.publishedAt,
+      contentUpdatedAt: new Date(),
     },
   });
 

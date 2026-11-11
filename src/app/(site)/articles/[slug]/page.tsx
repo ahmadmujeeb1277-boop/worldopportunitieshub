@@ -62,7 +62,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
           "@type": "Article",
           headline: article.title,
           description: article.excerpt,
-          author: { "@type": "Organization", name: article.author },
+          author: { "@type": "Person", name: article.author },
           publisher: { "@type": "Organization", name: "WorldOpportunitiesHub" },
           datePublished: article.publishedAt?.toISOString(),
           dateModified: article.updatedAt.toISOString(),

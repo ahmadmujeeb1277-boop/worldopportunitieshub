@@ -93,7 +93,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: path,
       images: [opportunity.coverImage ?? "/og-default.jpg"],
       publishedTime: opportunity.publishedAt?.toISOString(),
-      modifiedTime: opportunity.updatedAt.toISOString(),
+      modifiedTime: (opportunity.contentUpdatedAt ?? opportunity.publishedAt ?? opportunity.updatedAt).toISOString(),
     },
     twitter: {
       card: "summary_large_image",
@@ -170,6 +170,37 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
           ],
         }}
       />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: opportunity.title,
+          description: opportunity.summary,
+          author: { "@type": "Person", name: "Jabeen" },
+          publisher: { "@type": "Organization", name: "WorldOpportunitiesHub" },
+          datePublished: opportunity.publishedAt?.toISOString(),
+          dateModified: (opportunity.contentUpdatedAt ?? opportunity.publishedAt ?? opportunity.updatedAt).toISOString(),
+          mainEntityOfPage: `${siteUrl}/opportunities/${opportunity.type}/${opportunity.slug}`,
+        }}
+      />
+      {opportunity.type === "job" && (
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "JobPosting",
+            title: opportunity.title,
+            description: opportunity.summary,
+            datePosted: opportunity.publishedAt?.toISOString(),
+            validThrough: opportunity.deadline?.toISOString(),
+            employmentType: "FULL_TIME",
+            hiringOrganization: { "@type": "Organization", name: opportunity.organization },
+            jobLocation: opportunity.country
+              ? { "@type": "Place", address: { "@type": "PostalAddress", addressCountry: opportunity.country } }
+              : undefined,
+            directApply: false,
+          }}
+        />
+      )}
       {faqs.length > 0 && (
         <JsonLd
           data={{
@@ -221,7 +252,12 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
           <p className="mt-3 text-lg text-muted-foreground">{opportunity.summary}</p>
 
           <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-            <span>Last updated: {formatDate(opportunity.updatedAt)}</span>
+            <span>By Jabeen</span>
+            <span aria-hidden="true">&middot;</span>
+            <span>
+              Last updated:{" "}
+              {formatDate(opportunity.contentUpdatedAt ?? opportunity.publishedAt ?? opportunity.updatedAt)}
+            </span>
             <span aria-hidden="true">&middot;</span>
             <span>
               Source:{" "}

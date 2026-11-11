@@ -93,7 +93,7 @@ export function ArticleForm({
             name="author"
             type="text"
             required
-            defaultValue={article?.author ?? "WorldOpportunitiesHub Team"}
+            defaultValue={article?.author ?? "Jabeen"}
             className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-primary"
           />
           <FieldError message={errors.author} />

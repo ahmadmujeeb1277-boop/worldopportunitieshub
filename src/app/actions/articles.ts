@@ -27,7 +27,7 @@ function parseFormData(formData: FormData) {
     title: formData.get("title"),
     excerpt: formData.get("excerpt"),
     body: formData.get("body"),
-    author: formData.get("author") || "WorldOpportunitiesHub Team",
+    author: formData.get("author") || "Jabeen",
     coverImage: formData.get("coverImage") || null,
     status: formData.get("status") || "draft",
   });

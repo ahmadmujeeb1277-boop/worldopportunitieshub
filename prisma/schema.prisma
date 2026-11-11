@@ -40,6 +40,11 @@ model Opportunity {
   isFeatured    Boolean  @default(false)
   viewCount     Int      @default(0)
   publishedAt   DateTime?
+  // Set only when an admin actually edits the content (title, body, etc.) —
+  // unlike updatedAt, this isn't bumped by the per-pageview viewCount
+  // increment below, so it's the field "Last updated" / dateModified /
+  // sitemap lastmod should read from.
+  contentUpdatedAt DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   tags          TagOnOpportunity[]
@@ -58,7 +63,7 @@ model Article {
   excerpt     String   @db.Text
   body        String   @db.Text
   coverImage  String?  @db.Text
-  author      String   @default("WorldOpportunitiesHub Team")
+  author      String   @default("Jabeen")
   status      String   @default("draft") // draft | published
   publishedAt DateTime?
   createdAt   DateTime @default(now())

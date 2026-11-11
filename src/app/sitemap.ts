@@ -10,7 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [opportunities, articles] = await Promise.all([
     prisma.opportunity.findMany({
       where: { status: "published" },
-      select: { slug: true, type: true, updatedAt: true },
+      select: { slug: true, type: true, updatedAt: true, contentUpdatedAt: true, publishedAt: true },
     }),
     prisma.article.findMany({
       where: { status: "published" },
@@ -34,7 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const opportunityPages: MetadataRoute.Sitemap = opportunities.map((o) => ({
     url: `${base}/opportunities/${o.type}/${o.slug}`,
-    lastModified: o.updatedAt,
+    lastModified: o.contentUpdatedAt ?? o.publishedAt ?? o.updatedAt,
     changeFrequency: "weekly",
     priority: 0.8,
   }));

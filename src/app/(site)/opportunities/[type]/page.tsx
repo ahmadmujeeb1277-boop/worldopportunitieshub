@@ -6,6 +6,7 @@ import { OpportunityFilters } from "@/components/opportunity-filters";
 import { Pagination } from "@/components/pagination";
 import { EmptyState } from "@/components/empty-state";
 import { OPPORTUNITY_TYPES, opportunityTypeLabel } from "@/lib/taxonomy";
+import { JsonLd } from "@/components/json-ld";
 
 interface PageProps {
   params: Promise<{ type: string }>;
@@ -53,9 +54,20 @@ export default async function OpportunityTypePage({ params, searchParams }: Page
   });
 
   const label = opportunityTypeLabel(type);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+            { "@type": "ListItem", position: 2, name: label, item: `${siteUrl}/opportunities/${type}` },
+          ],
+        }}
+      />
       <h1 className="font-display text-3xl font-bold text-card-foreground">{label}</h1>
       <p className="mt-2 text-muted-foreground">
         {total} {total === 1 ? "opportunity" : "opportunities"} found
