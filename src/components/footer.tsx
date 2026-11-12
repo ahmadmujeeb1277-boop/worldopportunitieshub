@@ -66,10 +66,12 @@ export function Footer() {
           <p>&copy; {new Date().getFullYear()} WorldOpportunitiesHub. All rights reserved.</p>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             <Link href="/about" className="hover:text-primary">About</Link>
+            <Link href="/editorial-policy" className="hover:text-primary">Editorial Policy</Link>
             <Link href="/contact" className="hover:text-primary">Contact</Link>
             <Link href="/disclaimer" className="hover:text-primary">Disclaimer</Link>
             <Link href="/privacy" className="hover:text-primary">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-primary">Terms of Use</Link>
+            <Link href="/sitemap-page" className="hover:text-primary">Sitemap</Link>
           </div>
         </div>
       </div>
