@@ -44,6 +44,20 @@ export function latestOpportunitiesByType(type: string, take = 5) {
   });
 }
 
+export function openOpportunityCount() {
+  return prisma.opportunity.count({ where: { status: "published", ...stillOpen() } });
+}
+
+// The nearest-deadline open opportunities, for a "closing soon" hero strip —
+// real listings, not a decorative counter.
+export function closingSoonOpportunities(take = 4) {
+  return prisma.opportunity.findMany({
+    where: { status: "published", deadline: { gte: new Date() } },
+    orderBy: { deadline: "asc" },
+    take,
+  });
+}
+
 export function latestArticles(take = 3) {
   return prisma.article.findMany({
     where: { status: "published" },

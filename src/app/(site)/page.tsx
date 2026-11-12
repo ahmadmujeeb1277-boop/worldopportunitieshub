@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { Rocket, ShieldCheck, MagnifyingGlass, Lightning } from "@phosphor-icons/react/dist/ssr";
 import {
+  closingSoonOpportunities,
   latestArticles,
   latestOpportunitiesByType,
+  openOpportunityCount,
   recentOpportunities,
 } from "@/lib/queries";
 import { CategorySection } from "@/components/category-section";
@@ -10,10 +12,9 @@ import { SOCIAL_LINKS } from "@/lib/social";
 import { OpportunityCard } from "@/components/opportunity-card";
 import { ArticleCard } from "@/components/article-card";
 import { NewsletterForm } from "@/components/newsletter-form";
-import { HeroVideo } from "@/components/hero-video";
+import { LiveHero } from "@/components/live-hero";
 import { JsonLd } from "@/components/json-ld";
 import type { Metadata } from "next";
-import { OPPORTUNITY_TYPES } from "@/lib/taxonomy";
 
 const SECTIONS = [
   { type: "scholarship", title: "Scholarships", blurb: "Fully funded and partial funding for study abroad." },
@@ -30,9 +31,11 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const [latest, articles, ...sectionItems] = await Promise.all([
+  const [latest, articles, openCount, closingSoon, ...sectionItems] = await Promise.all([
     recentOpportunities(6),
     latestArticles(3),
+    openOpportunityCount(),
+    closingSoonOpportunities(4),
     ...SECTIONS.map((section) => latestOpportunitiesByType(section.type, 5)),
   ]);
 
@@ -62,63 +65,7 @@ export default async function HomePage() {
         }}
       />
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-border">
-        <HeroVideo />
-        <div className="relative z-10 mx-auto max-w-5xl px-4 py-20 text-center sm:px-6 lg:px-8">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-primary">
-            <ShieldCheck size={14} weight="fill" aria-hidden="true" />
-            Verified opportunities, updated daily
-          </span>
-          <div className="mx-auto mt-6 w-fit max-w-3xl rounded-2xl bg-black/45 px-6 py-5 sm:px-10 sm:py-7">
-            <h1 className="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl [text-shadow:0_2px_14px_rgba(0,0,0,0.5),0_1px_3px_rgba(0,0,0,0.4)]">
-              Find your next scholarship, job, grant, or fellowship
-            </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-lg text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.45),0_1px_2px_rgba(0,0,0,0.35)]">
-              WorldOpportunitiesHub curates opportunities from official sources around the
-              world. Search, read the full details, and apply directly on the provider&apos;s
-              website.
-            </p>
-          </div>
-
-          <form action="/opportunities" className="mx-auto mt-8 flex max-w-xl gap-2">
-            <label htmlFor="hero-search" className="sr-only">
-              Search opportunities
-            </label>
-            <div className="relative flex-1">
-              <MagnifyingGlass
-                size={18}
-                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-                aria-hidden="true"
-              />
-              <input
-                id="hero-search"
-                name="q"
-                type="search"
-                placeholder="Search by title, organization, or country..."
-                className="w-full rounded-full border border-border bg-card py-3 pl-10 pr-4 text-sm text-card-foreground placeholder:text-muted-foreground focus:border-primary"
-              />
-            </div>
-            <button
-              type="submit"
-              className="cursor-pointer rounded-full bg-primary px-6 py-3 text-sm font-semibold text-[var(--color-on-primary)] transition-opacity hover:opacity-90"
-            >
-              Search
-            </button>
-          </form>
-
-          <div className="mt-6 flex flex-wrap justify-center gap-2 text-sm">
-            {OPPORTUNITY_TYPES.slice(0, 7).map((t) => (
-              <Link
-                key={t.value}
-                href={`/opportunities/${t.value}`}
-                className="rounded-full border border-border bg-card px-3.5 py-1.5 font-medium text-card-foreground/80 transition-colors hover:border-primary hover:text-primary"
-              >
-                {t.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      <LiveHero openCount={openCount} closingSoon={closingSoon} />
 
       {/* Latest: everything published in the last 72 hours, any category */}
       {latest.length > 0 && (
