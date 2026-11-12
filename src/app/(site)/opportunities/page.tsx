@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { searchOpportunities } from "@/lib/queries";
+import { openOpportunityCount, opportunityCountsByType, searchOpportunities } from "@/lib/queries";
 import { OpportunityCard } from "@/components/opportunity-card";
 import { OpportunityFilters } from "@/components/opportunity-filters";
 import { Pagination } from "@/components/pagination";
@@ -27,14 +27,18 @@ export default async function OpportunitiesPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const page = Number(params.page ?? "1") || 1;
 
-  const { items, total, totalPages } = await searchOpportunities({
-    type: params.type,
-    region: params.region,
-    level: params.level,
-    fundingType: params.fundingType,
-    q: params.q,
-    page,
-  });
+  const [{ items, total, totalPages }, typeCounts, allCount] = await Promise.all([
+    searchOpportunities({
+      type: params.type,
+      region: params.region,
+      level: params.level,
+      fundingType: params.fundingType,
+      q: params.q,
+      page,
+    }),
+    opportunityCountsByType(),
+    openOpportunityCount(),
+  ]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -46,7 +50,12 @@ export default async function OpportunitiesPage({ searchParams }: PageProps) {
       </p>
 
       <div className="mt-6">
-        <OpportunityFilters basePath="/opportunities" current={params} />
+        <OpportunityFilters
+          basePath="/opportunities"
+          current={params}
+          counts={typeCounts}
+          totalCount={allCount}
+        />
       </div>
 
       {items.length === 0 ? (

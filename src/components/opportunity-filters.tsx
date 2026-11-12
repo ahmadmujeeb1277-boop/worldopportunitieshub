@@ -4,6 +4,8 @@ export function OpportunityFilters({
   basePath,
   current,
   lockType,
+  counts = {},
+  totalCount,
 }: {
   basePath: string;
   current: {
@@ -14,6 +16,8 @@ export function OpportunityFilters({
     q?: string;
   };
   lockType?: string;
+  counts?: Record<string, number>;
+  totalCount?: number;
 }) {
   return (
     <form
@@ -46,10 +50,11 @@ export function OpportunityFilters({
             defaultValue={current.type ?? ""}
             className="w-full cursor-pointer rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-primary"
           >
-            <option value="">All types</option>
+            <option value="">All types{totalCount != null && ` (${totalCount})`}</option>
             {OPPORTUNITY_TYPES.map((t) => (
               <option key={t.value} value={t.value}>
                 {t.label}
+                {counts[t.value] != null && ` (${counts[t.value]})`}
               </option>
             ))}
           </select>

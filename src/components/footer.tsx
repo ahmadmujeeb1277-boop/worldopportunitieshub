@@ -5,7 +5,7 @@ import { NewsletterForm } from "./newsletter-form";
 import { WhatsAppBanner } from "./whatsapp-banner";
 import { SocialBand } from "./social-buttons";
 
-export function Footer() {
+export function Footer({ counts = {} }: { counts?: Record<string, number> }) {
   return (
     <footer className="mt-24 border-t border-border bg-card">
       <WhatsAppBanner />
@@ -31,6 +31,7 @@ export function Footer() {
                     className="text-sm text-muted-foreground hover:text-primary"
                   >
                     {t.label}
+                    {counts[t.value] != null && ` (${counts[t.value]})`}
                   </Link>
                 </li>
               ))}

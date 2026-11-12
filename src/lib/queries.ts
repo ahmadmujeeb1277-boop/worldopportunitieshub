@@ -152,10 +152,14 @@ export function allArticles(page = 1, pageSize = 9) {
     });
 }
 
-export function opportunityCountsByType() {
-  return prisma.opportunity.groupBy({
+// A count per type, for showing "(n)" next to category links/options —
+// counts only published AND currently-open listings, matching what the
+// category list pages actually show.
+export async function opportunityCountsByType(): Promise<Record<string, number>> {
+  const rows = await prisma.opportunity.groupBy({
     by: ["type"],
-    where: { status: "published" },
+    where: { status: "published", ...stillOpen() },
     _count: { _all: true },
   });
+  return Object.fromEntries(rows.map((r) => [r.type, r._count._all]));
 }

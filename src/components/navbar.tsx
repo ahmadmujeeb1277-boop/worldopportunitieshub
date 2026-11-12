@@ -7,13 +7,13 @@ import { Logo } from "./logo";
 import { OPPORTUNITY_TYPES } from "@/lib/taxonomy";
 
 const primaryLinks = [
-  { href: "/opportunities/scholarship", label: "Scholarships" },
-  { href: "/opportunities/conference", label: "Conferences" },
-  { href: "/opportunities/grant", label: "Grants" },
-  { href: "/opportunities/fellowship", label: "Fellowships" },
+  { type: "scholarship", href: "/opportunities/scholarship", label: "Scholarships" },
+  { type: "conference", href: "/opportunities/conference", label: "Conferences" },
+  { type: "grant", href: "/opportunities/grant", label: "Grants" },
+  { type: "fellowship", href: "/opportunities/fellowship", label: "Fellowships" },
 ];
 
-export function Navbar() {
+export function Navbar({ counts = {} }: { counts?: Record<string, number> }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
 
@@ -34,6 +34,9 @@ export function Navbar() {
               className="rounded-md px-3 py-2 text-sm font-medium text-card-foreground/80 transition-colors hover:bg-muted hover:text-card-foreground"
             >
               {link.label}
+              {counts[link.type] != null && (
+                <span className="text-muted-foreground"> ({counts[link.type]})</span>
+              )}
             </Link>
           ))}
 
@@ -60,6 +63,9 @@ export function Navbar() {
                     className="block rounded-md px-3 py-2 text-sm text-card-foreground/80 hover:bg-muted hover:text-card-foreground"
                   >
                     {t.label}
+                    {counts[t.value] != null && (
+                      <span className="text-muted-foreground"> ({counts[t.value]})</span>
+                    )}
                   </Link>
                 ))}
                 <div className="my-1 h-px bg-border" />
@@ -128,6 +134,9 @@ export function Navbar() {
                   onClick={() => setMobileOpen(false)}
                 >
                   {t.label}
+                  {counts[t.value] != null && (
+                    <span className="text-muted-foreground"> ({counts[t.value]})</span>
+                  )}
                 </Link>
               </li>
             ))}

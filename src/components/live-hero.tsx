@@ -8,9 +8,11 @@ import { formatDeadline } from "@/lib/format";
 export function LiveHero({
   openCount,
   closingSoon,
+  counts = {},
 }: {
   openCount: number;
   closingSoon: Opportunity[];
+  counts?: Record<string, number>;
 }) {
   return (
     <section className="relative overflow-hidden border-b border-border bg-primary">
@@ -57,6 +59,7 @@ export function LiveHero({
               className="rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 font-medium text-white transition-colors hover:border-white hover:bg-white/20"
             >
               {t.label}
+              {counts[t.value] != null && <span className="text-white/70"> ({counts[t.value]})</span>}
             </Link>
           ))}
         </div>

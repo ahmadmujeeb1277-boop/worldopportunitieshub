@@ -5,6 +5,7 @@ import {
   latestArticles,
   latestOpportunitiesByType,
   openOpportunityCount,
+  opportunityCountsByType,
   recentOpportunities,
 } from "@/lib/queries";
 import { CategorySection } from "@/components/category-section";
@@ -31,11 +32,12 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const [latest, articles, openCount, closingSoon, ...sectionItems] = await Promise.all([
+  const [latest, articles, openCount, closingSoon, typeCounts, ...sectionItems] = await Promise.all([
     recentOpportunities(6),
     latestArticles(3),
     openOpportunityCount(),
     closingSoonOpportunities(4),
+    opportunityCountsByType(),
     ...SECTIONS.map((section) => latestOpportunitiesByType(section.type, 5)),
   ]);
 
@@ -65,7 +67,7 @@ export default async function HomePage() {
         }}
       />
       {/* Hero */}
-      <LiveHero openCount={openCount} closingSoon={closingSoon} />
+      <LiveHero openCount={openCount} closingSoon={closingSoon} counts={typeCounts} />
 
       {/* Latest: everything published in the last 72 hours, any category */}
       {latest.length > 0 && (
