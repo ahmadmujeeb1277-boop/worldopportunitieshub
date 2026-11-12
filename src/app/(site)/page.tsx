@@ -14,6 +14,7 @@ import { OpportunityCard } from "@/components/opportunity-card";
 import { ArticleCard } from "@/components/article-card";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { LiveHero } from "@/components/live-hero";
+import { TrustBand } from "@/components/trust-band";
 import { JsonLd } from "@/components/json-ld";
 import type { Metadata } from "next";
 
@@ -68,6 +69,7 @@ export default async function HomePage() {
       />
       {/* Hero */}
       <LiveHero openCount={openCount} closingSoon={closingSoon} counts={typeCounts} />
+      <TrustBand />
 
       {/* Latest: everything published in the last 72 hours, any category */}
       {latest.length > 0 && (

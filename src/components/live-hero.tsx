@@ -4,6 +4,8 @@ import type { Opportunity } from "@prisma/client";
 import { OPPORTUNITY_TYPES } from "@/lib/taxonomy";
 import { opportunityTypeLabel } from "@/lib/taxonomy";
 import { formatDeadline } from "@/lib/format";
+import { typeTheme } from "@/lib/type-theme";
+import { KindIcon } from "./card-image";
 
 export function LiveHero({
   openCount,
@@ -16,6 +18,22 @@ export function LiveHero({
 }) {
   return (
     <section className="relative overflow-hidden border-b border-border bg-primary">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.08]"
+        style={{
+          backgroundImage: "radial-gradient(circle, #ffffff 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-40 right-[-10%] h-[28rem] w-[28rem] rounded-full bg-accent/25 blur-[100px]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-48 left-[-10%] h-[28rem] w-[28rem] rounded-full bg-secondary/40 blur-[100px]"
+      />
       <div className="relative z-10 mx-auto max-w-5xl px-4 py-20 text-center sm:px-6 lg:px-8">
         <h1 className="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
           Your gateway to global opportunities
@@ -68,23 +86,29 @@ export function LiveHero({
           <div className="mt-12 text-left">
             <h2 className="text-center text-sm font-semibold text-white/80">Closing soon</h2>
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {closingSoon.map((o) => (
-                <Link
-                  key={o.id}
-                  href={`/opportunities/${o.type}/${o.slug}`}
-                  className="rounded-xl bg-white p-4 transition-transform hover:-translate-y-0.5"
-                >
-                  <span className="text-xs font-semibold text-primary">
-                    {opportunityTypeLabel(o.type)}
-                  </span>
-                  <p className="mt-1 line-clamp-2 text-sm font-semibold text-card-foreground">
-                    {o.title}
-                  </p>
-                  <p className="mt-1 text-xs font-medium text-muted-foreground">
-                    {formatDeadline(o.deadline)}
-                  </p>
-                </Link>
-              ))}
+              {closingSoon.map((o) => {
+                const theme = typeTheme(o.type);
+                return (
+                  <Link
+                    key={o.id}
+                    href={`/opportunities/${o.type}/${o.slug}`}
+                    className="rounded-xl bg-white p-4 transition-all hover:-translate-y-1 hover:shadow-xl"
+                  >
+                    <span
+                      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${theme.badge}`}
+                    >
+                      <KindIcon kind={o.type} size={13} />
+                      {opportunityTypeLabel(o.type)}
+                    </span>
+                    <p className="mt-2 line-clamp-2 text-sm font-semibold text-card-foreground">
+                      {o.title}
+                    </p>
+                    <p className="mt-1 text-xs font-medium text-muted-foreground">
+                      {formatDeadline(o.deadline)}
+                    </p>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         )}

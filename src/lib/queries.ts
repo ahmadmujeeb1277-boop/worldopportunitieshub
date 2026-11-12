@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "./prisma";
 
 // Listings with no deadline (rolling) or a deadline that hasn't passed yet.
@@ -154,12 +155,19 @@ export function allArticles(page = 1, pageSize = 9) {
 
 // A count per type, for showing "(n)" next to category links/options —
 // counts only published AND currently-open listings, matching what the
-// category list pages actually show.
-export async function opportunityCountsByType(): Promise<Record<string, number>> {
-  const rows = await prisma.opportunity.groupBy({
-    by: ["type"],
-    where: { status: "published", ...stillOpen() },
-    _count: { _all: true },
-  });
-  return Object.fromEntries(rows.map((r) => [r.type, r._count._all]));
-}
+// category list pages actually show. Cached for 5 minutes: this now runs
+// in the shared site layout on every page, and the shared-hosting MySQL
+// plan has a max_connections_per_hour cap — an uncached query here would
+// run on every single page view.
+export const opportunityCountsByType = unstable_cache(
+  async (): Promise<Record<string, number>> => {
+    const rows = await prisma.opportunity.groupBy({
+      by: ["type"],
+      where: { status: "published", ...stillOpen() },
+      _count: { _all: true },
+    });
+    return Object.fromEntries(rows.map((r) => [r.type, r._count._all]));
+  },
+  ["opportunity-counts-by-type"],
+  { revalidate: 300 },
+);
