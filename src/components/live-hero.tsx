@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import type { Opportunity } from "@prisma/client";
@@ -18,21 +19,17 @@ export function LiveHero({
 }) {
   return (
     <section className="relative overflow-hidden border-b border-border bg-primary">
-      <div
+      <Image
+        src="/images/hero-world-map.webp"
+        alt=""
+        fill
+        priority
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.08]"
-        style={{
-          backgroundImage: "radial-gradient(circle, #ffffff 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
-        }}
+        className="object-cover opacity-70"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-40 right-[-10%] h-[28rem] w-[28rem] rounded-full bg-accent/25 blur-[100px]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-48 left-[-10%] h-[28rem] w-[28rem] rounded-full bg-secondary/40 blur-[100px]"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/50 via-primary/20 to-primary"
       />
       <div className="relative z-10 mx-auto max-w-5xl px-4 py-20 text-center sm:px-6 lg:px-8">
         <h1 className="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
