@@ -16,11 +16,11 @@ export function LiveHero({
     <section className="relative overflow-hidden border-b border-border bg-primary">
       <div className="relative z-10 mx-auto max-w-5xl px-4 py-20 text-center sm:px-6 lg:px-8">
         <h1 className="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-          {openCount.toLocaleString()} opportunities open right now
+          Your gateway to global opportunities
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-lg text-white/90">
-          Fully funded scholarships, jobs, grants, and fellowships — verified from
-          official sources, updated daily.
+          {openCount.toLocaleString()} opportunities open right now — fully funded
+          scholarships, jobs, grants, and fellowships, verified from official sources.
         </p>
 
         <form action="/opportunities" className="mx-auto mt-8 flex max-w-xl gap-2">

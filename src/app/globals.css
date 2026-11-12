@@ -7,22 +7,22 @@
    where the lighter shade would fail WCAG AA. This is the single source of
    truth for site color — update tokens here, not per-component. */
 :root {
-  --color-primary: #047857;
+  --color-primary: #10172b;
   --color-on-primary: #ffffff;
-  --color-secondary: #059669;
+  --color-secondary: #1f2a48;
   --color-on-secondary: #ffffff;
-  --color-accent: #d97706;
-  --color-on-accent: #000000;
+  --color-accent: #ff6452;
+  --color-on-accent: #10172b;
   --color-background: #ffffff;
   --color-foreground: #1a1a1a;
   --color-card: #ffffff;
   --color-card-foreground: #1a1a1a;
-  --color-muted: #f8f9fa;
+  --color-muted: #f3f4f6;
   --color-muted-foreground: #4a4a4a;
   --color-border: #e5e7eb;
   --color-destructive: #b91c1c;
   --color-on-destructive: #ffffff;
-  --color-ring: #047857;
+  --color-ring: #10172b;
 }
 
 @theme inline {
