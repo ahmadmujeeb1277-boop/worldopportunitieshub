@@ -35,6 +35,11 @@ model Opportunity {
   region        String // africa | asia | europe | north-america | south-america | oceania | middle-east | global
   level         String? // high-school | undergraduate | masters | phd | postdoc | professional | any
   fundingType   String // fully-funded | partially-funded | paid | unpaid | unspecified
+  // Only ever set from a real figure stated in the listing's own content —
+  // never invented. Used for JobPosting structured data's baseSalary.
+  salaryValue    Int?
+  salaryCurrency String? // ISO 4217, e.g. "USD", "EUR"
+  salaryUnit     String? // "HOUR" | "DAY" | "WEEK" | "MONTH" | "YEAR"
   deadline      DateTime?
   coverImage    String?  @db.Text
   isFeatured    Boolean  @default(false)

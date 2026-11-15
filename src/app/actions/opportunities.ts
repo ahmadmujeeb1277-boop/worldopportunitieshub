@@ -25,6 +25,9 @@ const schema = z.object({
   level: z.string().optional(),
   fundingType: z.string().min(1, "Select a funding type."),
   deadline: z.string().optional(),
+  salaryValue: z.coerce.number().int().min(0).optional(),
+  salaryCurrency: z.string().trim().optional(),
+  salaryUnit: z.string().trim().optional(),
   coverImage: z.string().trim().url().nullable(),
   isFeatured: z.coerce.boolean().optional(),
   status: z.enum(["draft", "published"]),
@@ -55,6 +58,11 @@ function parseFormData(formData: FormData) {
     level: formData.get("level") || undefined,
     fundingType: formData.get("fundingType"),
     deadline: formData.get("deadline") || undefined,
+    salaryValue: formData.get("salaryValue") || undefined,
+    salaryCurrency: formData.get("salaryCurrency")
+      ? String(formData.get("salaryCurrency")).trim().toUpperCase()
+      : undefined,
+    salaryUnit: formData.get("salaryUnit") || undefined,
     coverImage: formData.get("coverImage") || null,
     isFeatured: formData.get("isFeatured") === "on",
     status: formData.get("status") || "draft",

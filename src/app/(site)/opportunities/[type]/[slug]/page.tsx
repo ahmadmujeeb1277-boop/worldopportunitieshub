@@ -197,6 +197,19 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
             jobLocation: opportunity.country
               ? { "@type": "Place", address: { "@type": "PostalAddress", addressCountry: opportunity.country } }
               : undefined,
+            // Only set from a real figure already stated in the listing's own
+            // content (see prisma/schema.prisma) -- never a guess.
+            baseSalary: opportunity.salaryValue
+              ? {
+                  "@type": "MonetaryAmount",
+                  currency: opportunity.salaryCurrency,
+                  value: {
+                    "@type": "QuantitativeValue",
+                    value: opportunity.salaryValue,
+                    unitText: opportunity.salaryUnit,
+                  },
+                }
+              : undefined,
             directApply: false,
           }}
         />

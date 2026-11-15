@@ -328,6 +328,57 @@ export function OpportunityForm({
         </div>
       </div>
 
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div>
+          <label htmlFor="salaryValue" className="mb-1 block text-sm font-medium text-card-foreground">
+            Salary amount
+          </label>
+          <input
+            id="salaryValue"
+            name="salaryValue"
+            type="number"
+            min={0}
+            defaultValue={opportunity?.salaryValue ?? ""}
+            placeholder="e.g. 68118"
+            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-primary"
+          />
+          <p className="mt-1 text-xs text-muted-foreground">
+            Jobs only — only enter a real figure stated by the employer. Leave blank if unknown.
+          </p>
+        </div>
+        <div>
+          <label htmlFor="salaryCurrency" className="mb-1 block text-sm font-medium text-card-foreground">
+            Currency
+          </label>
+          <input
+            id="salaryCurrency"
+            name="salaryCurrency"
+            type="text"
+            defaultValue={opportunity?.salaryCurrency ?? ""}
+            placeholder="e.g. USD"
+            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-primary"
+          />
+        </div>
+        <div>
+          <label htmlFor="salaryUnit" className="mb-1 block text-sm font-medium text-card-foreground">
+            Per
+          </label>
+          <select
+            id="salaryUnit"
+            name="salaryUnit"
+            defaultValue={opportunity?.salaryUnit ?? ""}
+            className="w-full cursor-pointer rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-primary"
+          >
+            <option value="">Not specified</option>
+            <option value="HOUR">Hour</option>
+            <option value="DAY">Day</option>
+            <option value="WEEK">Week</option>
+            <option value="MONTH">Month</option>
+            <option value="YEAR">Year</option>
+          </select>
+        </div>
+      </div>
+
       <div className="flex items-center gap-6">
         <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-card-foreground">
           <input
