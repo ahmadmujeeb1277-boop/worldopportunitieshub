@@ -3,9 +3,9 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import slugify from "slugify";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { makeSlug } from "@/lib/slug";
 
 const schema = z.object({
   title: z.string().trim().min(5, "Title must be at least 5 characters."),
@@ -51,7 +51,7 @@ export async function createArticle(
     return { status: "error", message: "Please fix the errors below.", fieldErrors };
   }
 
-  const slug = slugify(parsed.data.title, { lower: true, strict: true });
+  const slug = makeSlug(parsed.data.title);
 
   await prisma.article.create({
     data: {
@@ -84,9 +84,7 @@ export async function updateArticle(
   if (!existing) return { status: "error", message: "Article not found." };
 
   const slug =
-    existing.title === parsed.data.title
-      ? existing.slug
-      : slugify(parsed.data.title, { lower: true, strict: true });
+    existing.title === parsed.data.title ? existing.slug : makeSlug(parsed.data.title);
 
   await prisma.article.update({
     where: { id },

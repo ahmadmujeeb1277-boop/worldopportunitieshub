@@ -3,9 +3,9 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import slugify from "slugify";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { makeSlug } from "@/lib/slug";
 
 const schema = z.object({
   title: z.string().trim().min(5, "Title must be at least 5 characters."),
@@ -90,7 +90,7 @@ export async function createOpportunity(
   }
 
   const { deadline, ...data } = parsed.data;
-  const slug = slugify(data.title, { lower: true, strict: true });
+  const slug = makeSlug(data.title);
 
   await prisma.opportunity.create({
     data: {
@@ -127,8 +127,7 @@ export async function updateOpportunity(
   const existing = await prisma.opportunity.findUnique({ where: { id } });
   if (!existing) return { status: "error", message: "Opportunity not found." };
 
-  const slug =
-    existing.title === data.title ? existing.slug : slugify(data.title, { lower: true, strict: true });
+  const slug = existing.title === data.title ? existing.slug : makeSlug(data.title);
 
   await prisma.opportunity.update({
     where: { id },
