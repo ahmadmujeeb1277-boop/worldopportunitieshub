@@ -17,9 +17,7 @@ export function Navbar({ counts = {} }: { counts?: Record<string, number> }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
 
-  const moreTypes = OPPORTUNITY_TYPES.filter(
-    (t) => !primaryLinks.some((l) => l.href === `/opportunities/${t.value}`),
-  );
+  const moreTypes = OPPORTUNITY_TYPES;
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
