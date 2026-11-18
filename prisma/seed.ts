@@ -227,13 +227,14 @@ async function main() {
   }
 
   for (const article of articles) {
-    const { tags: tagNames, ...data } = article;
+    const { tags: tagNames, author, ...data } = article;
     const tags = await upsertTags(tagNames);
     await prisma.article.upsert({
       where: { slug: slug(data.title) },
       update: {},
       create: {
         ...data,
+        authorName: author,
         slug: slug(data.title),
         status: "published",
         publishedAt: new Date(),

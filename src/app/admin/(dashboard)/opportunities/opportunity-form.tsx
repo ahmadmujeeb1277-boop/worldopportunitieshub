@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import type { Opportunity } from "@prisma/client";
+import type { Author, Opportunity } from "@prisma/client";
 import { WarningCircle } from "@phosphor-icons/react";
 import { OPPORTUNITY_TYPES, REGIONS, LEVELS, FUNDING_TYPES } from "@/lib/taxonomy";
 import { ImageUpload } from "@/components/admin/image-upload";
@@ -22,9 +22,11 @@ function FieldError({ message }: { message?: string }) {
 export function OpportunityForm({
   action,
   opportunity,
+  authors,
 }: {
   action: (state: OpportunityFormState, formData: FormData) => Promise<OpportunityFormState>;
   opportunity?: Opportunity;
+  authors: Author[];
 }) {
   const [state, formAction, pending] = useActionState(action, initialState);
   const errors = state.fieldErrors ?? {};
@@ -326,6 +328,25 @@ export function OpportunityForm({
           />
           <p className="mt-1 text-xs text-muted-foreground">Leave blank for rolling/no fixed deadline.</p>
         </div>
+      </div>
+
+      <div>
+        <label htmlFor="authorId" className="mb-1 block text-sm font-medium text-card-foreground">
+          Author *
+        </label>
+        <select
+          id="authorId"
+          name="authorId"
+          required
+          defaultValue={opportunity?.authorId ?? authors[0]?.id ?? ""}
+          className="w-full cursor-pointer rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-primary"
+        >
+          {authors.length === 0 && <option value="" disabled>No authors yet</option>}
+          {authors.map((a) => (
+            <option key={a.id} value={a.id}>{a.name}</option>
+          ))}
+        </select>
+        <FieldError message={errors.authorId} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

@@ -1,9 +1,12 @@
+import { prisma } from "@/lib/prisma";
 import { OpportunityForm } from "../opportunity-form";
 import { createOpportunity } from "@/app/actions/opportunities";
 
 export const metadata = { title: "Add Opportunity" };
 
-export default function NewOpportunityPage() {
+export default async function NewOpportunityPage() {
+  const authors = await prisma.author.findMany({ orderBy: { name: "asc" } });
+
   return (
     <div>
       <h1 className="font-display text-2xl font-bold text-card-foreground">Add Opportunity</h1>
@@ -11,7 +14,7 @@ export default function NewOpportunityPage() {
         Fields marked * are required. Save as Draft to preview before publishing.
       </p>
       <div className="mt-6">
-        <OpportunityForm action={createOpportunity} />
+        <OpportunityForm action={createOpportunity} authors={authors} />
       </div>
     </div>
   );

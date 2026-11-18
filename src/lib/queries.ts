@@ -118,7 +118,7 @@ export async function searchOpportunities(filters: OpportunityFilters) {
 export function opportunityBySlug(slug: string) {
   return prisma.opportunity.findUnique({
     where: { slug },
-    include: { tags: { include: { tag: true } } },
+    include: { tags: { include: { tag: true } }, author: true },
   });
 }
 
@@ -135,8 +135,12 @@ export function relatedOpportunities(type: string, excludeId: string, take = 4) 
 export function articleBySlug(slug: string) {
   return prisma.article.findUnique({
     where: { slug },
-    include: { tags: { include: { tag: true } } },
+    include: { tags: { include: { tag: true } }, author: true },
   });
+}
+
+export function authorBySlug(slug: string) {
+  return prisma.author.findUnique({ where: { slug } });
 }
 
 export function allArticles(page = 1, pageSize = 9) {

@@ -44,7 +44,7 @@ export default async function AdminArticlesPage() {
                 <td className="max-w-xs truncate px-4 py-3 font-medium text-card-foreground">
                   {a.title}
                 </td>
-                <td className="px-4 py-3 text-muted-foreground">{a.author}</td>
+                <td className="px-4 py-3 text-muted-foreground">{a.authorName}</td>
                 <td className="px-4 py-3">
                   <span
                     className={`rounded-full px-2 py-0.5 text-xs font-semibold ${

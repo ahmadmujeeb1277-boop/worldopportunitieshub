@@ -4,6 +4,7 @@ import {
   GraduationCap,
   Newspaper,
   Envelope,
+  IdentificationCard,
   SignOut,
   ArrowSquareOut,
 } from "@phosphor-icons/react/dist/ssr";
@@ -14,6 +15,7 @@ const navItems = [
   { href: "/admin", label: "Dashboard", Icon: SquaresFour },
   { href: "/admin/opportunities", label: "Opportunities", Icon: GraduationCap },
   { href: "/admin/articles", label: "Articles", Icon: Newspaper },
+  { href: "/admin/authors", label: "Authors", Icon: IdentificationCard },
   { href: "/admin/subscribers", label: "Subscribers", Icon: Envelope },
 ];
 

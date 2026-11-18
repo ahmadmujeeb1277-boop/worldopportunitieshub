@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import type { Article } from "@prisma/client";
+import type { Article, Author } from "@prisma/client";
 import { WarningCircle } from "@phosphor-icons/react";
 import type { ArticleFormState } from "@/app/actions/articles";
 import { ImageUpload } from "@/components/admin/image-upload";
@@ -21,9 +21,11 @@ function FieldError({ message }: { message?: string }) {
 export function ArticleForm({
   action,
   article,
+  authors,
 }: {
   action: (state: ArticleFormState, formData: FormData) => Promise<ArticleFormState>;
   article?: Article;
+  authors: Author[];
 }) {
   const [state, formAction, pending] = useActionState(action, initialState);
   const errors = state.fieldErrors ?? {};
@@ -85,18 +87,22 @@ export function ArticleForm({
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="author" className="mb-1 block text-sm font-medium text-card-foreground">
+          <label htmlFor="authorId" className="mb-1 block text-sm font-medium text-card-foreground">
             Author *
           </label>
-          <input
-            id="author"
-            name="author"
-            type="text"
+          <select
+            id="authorId"
+            name="authorId"
             required
-            defaultValue={article?.author ?? "Jabeen"}
-            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-primary"
-          />
-          <FieldError message={errors.author} />
+            defaultValue={article?.authorId ?? authors[0]?.id ?? ""}
+            className="w-full cursor-pointer rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-primary"
+          >
+            {authors.length === 0 && <option value="" disabled>No authors yet</option>}
+            {authors.map((a) => (
+              <option key={a.id} value={a.id}>{a.name}</option>
+            ))}
+          </select>
+          <FieldError message={errors.authorId} />
         </div>
         <div className="sm:col-span-2">
           <ImageUpload name="coverImage" label="Featured image" initialUrl={article?.coverImage} />

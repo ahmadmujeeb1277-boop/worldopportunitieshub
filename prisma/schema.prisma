@@ -53,12 +53,15 @@ model Opportunity {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   tags          TagOnOpportunity[]
+  authorId      String?
+  author        Author?  @relation(fields: [authorId], references: [id], onDelete: SetNull)
 
   @@index([type])
   @@index([region])
   @@index([status])
   @@index([deadline])
   @@index([status, publishedAt])
+  @@index([authorId])
 }
 
 model Article {
@@ -68,7 +71,12 @@ model Article {
   excerpt     String   @db.Text
   body        String   @db.Text
   coverImage  String?  @db.Text
-  author      String   @default("Jabeen")
+  // Legacy free-text author name, kept in sync automatically whenever
+  // `author` (below) is set — superseded by the Author relation for
+  // display, kept only so the original column is never dropped.
+  authorName  String   @default("Jabeen") @map("author")
+  authorId    String?
+  author      Author?  @relation(fields: [authorId], references: [id], onDelete: SetNull)
   status      String   @default("draft") // draft | published
   publishedAt DateTime?
   createdAt   DateTime @default(now())
@@ -76,6 +84,21 @@ model Article {
   tags        TagOnArticle[]
 
   @@index([status])
+  @@index([authorId])
+}
+
+model Author {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  role          String? // e.g. "Editor, WorldOpportunitiesHub"
+  bio           String?  @db.Text
+  avatarUrl     String?  @db.Text
+  socialUrl     String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  opportunities Opportunity[]
+  articles      Article[]
 }
 
 model Tag {

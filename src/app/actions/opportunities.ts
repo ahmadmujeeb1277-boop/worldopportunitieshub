@@ -25,6 +25,7 @@ const schema = z.object({
   level: z.string().optional(),
   fundingType: z.string().min(1, "Select a funding type."),
   deadline: z.string().optional(),
+  authorId: z.string().min(1, "Select an author."),
   salaryValue: z.coerce.number().int().min(0).optional(),
   salaryCurrency: z.string().trim().optional(),
   salaryUnit: z.string().trim().optional(),
@@ -58,6 +59,7 @@ function parseFormData(formData: FormData) {
     level: formData.get("level") || undefined,
     fundingType: formData.get("fundingType"),
     deadline: formData.get("deadline") || undefined,
+    authorId: formData.get("authorId"),
     salaryValue: formData.get("salaryValue") || undefined,
     salaryCurrency: formData.get("salaryCurrency")
       ? String(formData.get("salaryCurrency")).trim().toUpperCase()

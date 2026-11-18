@@ -31,6 +31,8 @@ import { CardImage } from "@/components/card-image";
 import { TableOfContents } from "@/components/table-of-contents";
 import { FaqList } from "@/components/faq-list";
 import { SectionBlock } from "@/components/section-block";
+import { Byline } from "@/components/byline";
+import { AuthorCard } from "@/components/author-card";
 import { typeTheme } from "@/lib/type-theme";
 import { isPast } from "date-fns";
 
@@ -176,7 +178,14 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
           "@type": "Article",
           headline: opportunity.title,
           description: opportunity.summary,
-          author: { "@type": "Person", name: "Jabeen" },
+          author: opportunity.author
+            ? {
+                "@type": "Person",
+                name: opportunity.author.name,
+                url: `${siteUrl}/authors/${opportunity.author.slug}`,
+                ...(opportunity.author.avatarUrl ? { image: opportunity.author.avatarUrl } : {}),
+              }
+            : { "@type": "Organization", name: "WorldOpportunitiesHub" },
           publisher: { "@type": "Organization", name: "WorldOpportunitiesHub" },
           datePublished: opportunity.publishedAt?.toISOString(),
           dateModified: (opportunity.contentUpdatedAt ?? opportunity.publishedAt ?? opportunity.updatedAt).toISOString(),
@@ -264,6 +273,12 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
           </h1>
           <p className="mt-3 text-lg text-muted-foreground">{opportunity.summary}</p>
 
+          <Byline
+            author={opportunity.author}
+            publishedAt={opportunity.publishedAt}
+            updatedAt={opportunity.contentUpdatedAt ?? opportunity.publishedAt ?? opportunity.updatedAt}
+          />
+
           <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
             <span>
               Last updated:{" "}
@@ -330,7 +345,7 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
             details on the official website before applying.
           </p>
 
-          <p className="mt-4 text-sm text-muted-foreground">Published by Jabeen</p>
+          <AuthorCard author={opportunity.author} />
         </article>
 
         <aside className="lg:col-span-1">

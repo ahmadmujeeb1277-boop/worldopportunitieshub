@@ -11,7 +11,7 @@ const schema = z.object({
   title: z.string().trim().min(5, "Title must be at least 5 characters."),
   excerpt: z.string().trim().min(10, "Excerpt must be at least 10 characters."),
   body: z.string().trim().min(20, "Body must be at least 20 characters."),
-  author: z.string().trim().min(2, "Author is required."),
+  authorId: z.string().min(1, "Select an author."),
   coverImage: z.string().trim().url().nullable(),
   status: z.enum(["draft", "published"]),
 });
@@ -27,7 +27,7 @@ function parseFormData(formData: FormData) {
     title: formData.get("title"),
     excerpt: formData.get("excerpt"),
     body: formData.get("body"),
-    author: formData.get("author") || "Jabeen",
+    authorId: formData.get("authorId"),
     coverImage: formData.get("coverImage") || null,
     status: formData.get("status") || "draft",
   });
@@ -51,11 +51,17 @@ export async function createArticle(
     return { status: "error", message: "Please fix the errors below.", fieldErrors };
   }
 
+  const author = await prisma.author.findUnique({ where: { id: parsed.data.authorId } });
+  if (!author) {
+    return { status: "error", message: "Please fix the errors below.", fieldErrors: { authorId: "Select a valid author." } };
+  }
+
   const slug = makeSlug(parsed.data.title);
 
   await prisma.article.create({
     data: {
       ...parsed.data,
+      authorName: author.name,
       slug,
       publishedAt: parsed.data.status === "published" ? new Date() : null,
     },
@@ -83,6 +89,11 @@ export async function updateArticle(
   const existing = await prisma.article.findUnique({ where: { id } });
   if (!existing) return { status: "error", message: "Article not found." };
 
+  const author = await prisma.author.findUnique({ where: { id: parsed.data.authorId } });
+  if (!author) {
+    return { status: "error", message: "Please fix the errors below.", fieldErrors: { authorId: "Select a valid author." } };
+  }
+
   const slug =
     existing.title === parsed.data.title ? existing.slug : makeSlug(parsed.data.title);
 
@@ -90,6 +101,7 @@ export async function updateArticle(
     where: { id },
     data: {
       ...parsed.data,
+      authorName: author.name,
       slug,
       publishedAt:
         parsed.data.status === "published" ? (existing.publishedAt ?? new Date()) : existing.publishedAt,

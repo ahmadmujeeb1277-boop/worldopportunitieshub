@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-  const [opportunities, articles] = await Promise.all([
+  const [opportunities, articles, authors] = await Promise.all([
     prisma.opportunity.findMany({
       where: { status: "published" },
       select: { slug: true, type: true, updatedAt: true, contentUpdatedAt: true, publishedAt: true },
@@ -16,6 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       where: { status: "published" },
       select: { slug: true, updatedAt: true },
     }),
+    prisma.author.findMany({ select: { slug: true, updatedAt: true } }),
   ]);
 
   const staticPages: MetadataRoute.Sitemap = [
@@ -46,5 +47,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
-  return [...staticPages, ...typePages, ...opportunityPages, ...articlePages];
+  const authorPages: MetadataRoute.Sitemap = authors.map((a) => ({
+    url: `${base}/authors/${a.slug}`,
+    lastModified: a.updatedAt,
+    changeFrequency: "monthly",
+    priority: 0.3,
+  }));
+
+  return [...staticPages, ...typePages, ...opportunityPages, ...articlePages, ...authorPages];
 }

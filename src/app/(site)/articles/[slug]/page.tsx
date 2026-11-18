@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarBlank, CaretRight } from "@phosphor-icons/react/dist/ssr";
+import { CaretRight } from "@phosphor-icons/react/dist/ssr";
 import { articleBySlug, latestOpportunities } from "@/lib/queries";
-import { formatDate } from "@/lib/format";
 import { renderMarkdownWithToc } from "@/lib/markdown";
 import { JsonLd } from "@/components/json-ld";
 import { CardImage } from "@/components/card-image";
 import { TableOfContents } from "@/components/table-of-contents";
 import { OpportunityCard } from "@/components/opportunity-card";
+import { Byline } from "@/components/byline";
+import { AuthorCard } from "@/components/author-card";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: [article.coverImage ?? "/og-default.jpg"],
       publishedTime: article.publishedAt?.toISOString(),
       modifiedTime: article.updatedAt.toISOString(),
-      authors: [article.author],
+      authors: [article.author?.name ?? article.authorName],
     },
     twitter: {
       card: "summary_large_image",
@@ -62,7 +63,14 @@ export default async function ArticleDetailPage({ params }: PageProps) {
           "@type": "Article",
           headline: article.title,
           description: article.excerpt,
-          author: { "@type": "Person", name: article.author },
+          author: article.author
+            ? {
+                "@type": "Person",
+                name: article.author.name,
+                url: `${siteUrl}/authors/${article.author.slug}`,
+                ...(article.author.avatarUrl ? { image: article.author.avatarUrl } : {}),
+              }
+            : { "@type": "Person", name: article.authorName },
           publisher: { "@type": "Organization", name: "WorldOpportunitiesHub" },
           datePublished: article.publishedAt?.toISOString(),
           dateModified: article.updatedAt.toISOString(),
@@ -83,12 +91,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
         {article.title}
       </h1>
 
-      <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
-        <span className="flex items-center gap-1.5">
-          <CalendarBlank size={16} aria-hidden="true" />
-          {formatDate(article.publishedAt)}
-        </span>
-      </div>
+      <Byline author={article.author} publishedAt={article.publishedAt} updatedAt={article.updatedAt} />
 
       <TableOfContents items={toc} />
 
@@ -97,7 +100,7 @@ export default async function ArticleDetailPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: bodyHtml }}
       />
 
-      <p className="mt-8 text-sm text-muted-foreground">Published by Jabeen</p>
+      <AuthorCard author={article.author} />
 
       <div className="mt-12 rounded-xl border border-border bg-primary/10 p-6 text-center">
         <p className="font-semibold text-card-foreground">Ready to find your next opportunity?</p>

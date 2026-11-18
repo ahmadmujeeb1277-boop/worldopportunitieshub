@@ -11,7 +11,10 @@ interface PageProps {
 
 export default async function EditOpportunityPage({ params }: PageProps) {
   const { id } = await params;
-  const opportunity = await prisma.opportunity.findUnique({ where: { id } });
+  const [opportunity, authors] = await Promise.all([
+    prisma.opportunity.findUnique({ where: { id } }),
+    prisma.author.findMany({ orderBy: { name: "asc" } }),
+  ]);
 
   if (!opportunity) notFound();
 
@@ -22,7 +25,7 @@ export default async function EditOpportunityPage({ params }: PageProps) {
       <h1 className="font-display text-2xl font-bold text-card-foreground">Edit Opportunity</h1>
       <p className="mt-1 truncate text-sm text-muted-foreground">{opportunity.title}</p>
       <div className="mt-6">
-        <OpportunityForm action={action} opportunity={opportunity} />
+        <OpportunityForm action={action} opportunity={opportunity} authors={authors} />
       </div>
     </div>
   );

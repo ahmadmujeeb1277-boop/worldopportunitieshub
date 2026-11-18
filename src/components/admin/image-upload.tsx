@@ -5,12 +5,12 @@ import { ImageSquare, Trash, UploadSimple, WarningCircle } from "@phosphor-icons
 
 const MAX_BYTES = 12 * 1024 * 1024;
 const ACCEPTED = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-// Every image is saved at this exact 16:9 size, matching the frame the site
-// shows it in, so nothing gets cropped unexpectedly after upload.
-const OUT_W = 1280;
-const OUT_H = 720;
+// Every image is saved at this exact size, matching the frame the site shows
+// it in, so nothing gets cropped unexpectedly after upload.
+const OUTPUT_SIZE = { video: { w: 1280, h: 720 }, square: { w: 480, h: 480 } } as const;
 
 type Mode = "fill" | "fit";
+type Aspect = keyof typeof OUTPUT_SIZE;
 
 function draw(
   canvas: HTMLCanvasElement,
@@ -41,10 +41,10 @@ function draw(
   ctx.drawImage(img, cx * img.width - vw / 2, cy * img.height - vh / 2, vw, vh, 0, 0, W, H);
 }
 
-function clampCenter(img: ImageBitmap, zoom: number, cx: number, cy: number) {
-  const s = Math.max(OUT_W / img.width, OUT_H / img.height) * zoom;
-  const halfX = OUT_W / s / 2 / img.width;
-  const halfY = OUT_H / s / 2 / img.height;
+function clampCenter(img: ImageBitmap, outW: number, outH: number, zoom: number, cx: number, cy: number) {
+  const s = Math.max(outW / img.width, outH / img.height) * zoom;
+  const halfX = outW / s / 2 / img.width;
+  const halfY = outH / s / 2 / img.height;
   return {
     cx: Math.min(1 - halfX, Math.max(halfX, cx)),
     cy: Math.min(1 - halfY, Math.max(halfY, cy)),
@@ -55,11 +55,14 @@ export function ImageUpload({
   name,
   label,
   initialUrl,
+  aspect = "video",
 }: {
   name: string;
   label: string;
   initialUrl?: string | null;
+  aspect?: Aspect;
 }) {
+  const { w: outW, h: outH } = OUTPUT_SIZE[aspect];
   const [url, setUrl] = useState(initialUrl ?? "");
   const [uploading, setUploading] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -83,9 +86,11 @@ export function ImageUpload({
   const move = useCallback(
     (dxImgFraction: number, dyImgFraction: number) => {
       if (!source) return;
-      setCenter((c) => clampCenter(source.bitmap, zoom, c.cx + dxImgFraction, c.cy + dyImgFraction));
+      setCenter((c) =>
+        clampCenter(source.bitmap, outW, outH, zoom, c.cx + dxImgFraction, c.cy + dyImgFraction),
+      );
     },
-    [source, zoom],
+    [source, zoom, outW, outH],
   );
 
   async function openEditor(file: File | undefined) {
@@ -123,8 +128,8 @@ export function ImageUpload({
     setUploading(true);
     try {
       const canvas = document.createElement("canvas");
-      canvas.width = OUT_W;
-      canvas.height = OUT_H;
+      canvas.width = outW;
+      canvas.height = outH;
       draw(canvas, source.bitmap, mode, zoom, center.cx, center.cy);
 
       const blob = await new Promise<Blob | null>((resolve) =>
@@ -163,11 +168,12 @@ export function ImageUpload({
         <div className="rounded-md border border-border bg-background p-3">
           <canvas
             ref={previewRef}
-            width={640}
-            height={360}
+            width={outW / 2}
+            height={outH / 2}
             tabIndex={mode === "fill" ? 0 : -1}
             aria-label="Image preview. In fill mode, drag or use the arrow keys to reposition."
-            className={`aspect-video w-full max-w-lg touch-none rounded-md border border-border ${
+            style={{ aspectRatio: `${outW} / ${outH}` }}
+            className={`w-full max-w-lg touch-none rounded-md border border-border ${
               mode === "fill" ? "cursor-grab active:cursor-grabbing" : ""
             }`}
             onPointerDown={(e) => {
@@ -179,12 +185,12 @@ export function ImageUpload({
               const start = dragStart.current;
               if (!start || !source) return;
               const rect = e.currentTarget.getBoundingClientRect();
-              const s = Math.max(OUT_W / source.bitmap.width, OUT_H / source.bitmap.height) * zoom;
-              const outPerCss = OUT_W / rect.width;
+              const s = Math.max(outW / source.bitmap.width, outH / source.bitmap.height) * zoom;
+              const outPerCss = outW / rect.width;
               const dx = ((e.clientX - start.x) * outPerCss) / s / source.bitmap.width;
               const dy = ((e.clientY - start.y) * outPerCss) / s / source.bitmap.height;
               setCenter(
-                clampCenter(source.bitmap, zoom, start.cx - dx, start.cy - dy),
+                clampCenter(source.bitmap, outW, outH, zoom, start.cx - dx, start.cy - dy),
               );
             }}
             onPointerUp={() => {
@@ -243,7 +249,7 @@ export function ImageUpload({
                 onChange={(e) => {
                   const z = Number(e.target.value);
                   setZoom(z);
-                  setCenter((c) => clampCenter(source.bitmap, z, c.cx, c.cy));
+                  setCenter((c) => clampCenter(source.bitmap, outW, outH, z, c.cx, c.cy));
                 }}
                 className="w-full cursor-pointer accent-[var(--color-primary)]"
               />
@@ -287,7 +293,15 @@ export function ImageUpload({
       ) : url ? (
         <div className="flex items-start gap-4 rounded-md border border-border bg-background p-3">
           {/* eslint-disable-next-line @next/next/no-img-element -- blob host varies */}
-          <img src={url} alt="Selected cover" className="aspect-video w-40 rounded-md object-cover" />
+          <img
+            src={url}
+            alt={`Selected ${label.toLowerCase()}`}
+            className={
+              aspect === "square"
+                ? "aspect-square w-24 rounded-full object-cover"
+                : "aspect-video w-40 rounded-md object-cover"
+            }
+          />
           <div className="flex flex-col gap-2">
             <button
               type="button"
