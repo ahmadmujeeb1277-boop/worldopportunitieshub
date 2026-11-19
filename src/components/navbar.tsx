@@ -25,7 +25,7 @@ export function Navbar({ counts = {} }: { counts?: Record<string, number> }) {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Logo />
 
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-1 whitespace-nowrap xl:flex" aria-label="Primary">
           {primaryLinks.map((link) => (
             <Link
               key={link.href}
@@ -92,7 +92,7 @@ export function Navbar({ counts = {} }: { counts?: Record<string, number> }) {
           </Link>
         </nav>
 
-        <div className="hidden items-center gap-2 lg:flex">
+        <div className="hidden items-center gap-2 xl:flex">
           <Link
             href="/search"
             aria-label="Search opportunities"
@@ -111,7 +111,7 @@ export function Navbar({ counts = {} }: { counts?: Record<string, number> }) {
 
         <button
           type="button"
-          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-md text-card-foreground lg:hidden"
+          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-md text-card-foreground xl:hidden"
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
           onClick={() => setMobileOpen((v) => !v)}
@@ -123,7 +123,7 @@ export function Navbar({ counts = {} }: { counts?: Record<string, number> }) {
       {mobileOpen && (
         <nav
           aria-label="Primary mobile"
-          className="border-t border-border bg-card px-4 py-3 lg:hidden"
+          className="border-t border-border bg-card px-4 py-3 xl:hidden"
         >
           <ul className="flex flex-col gap-1">
             {OPPORTUNITY_TYPES.map((t) => (
