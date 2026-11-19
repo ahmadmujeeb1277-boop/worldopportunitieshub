@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* Clean light theme. Primary green is deepened from the brand's original
    #059669 to #047857 specifically so it passes 4.5:1 text contrast on white
@@ -23,6 +24,30 @@
   --color-destructive: #b91c1c;
   --color-on-destructive: #ffffff;
   --color-ring: #10172b;
+}
+
+/* Dark theme — primary lightens (and its on-color flips to dark text) since
+   the light-mode navy fails contrast as link/icon text on a dark page; the
+   hero section keeps its own fixed navy bg regardless of theme, so it isn't
+   affected by this. Accent keeps its light-bg/dark-text pairing unchanged
+   since it's always a self-contained button, never page text. */
+.dark {
+  --color-primary: #8da0e8;
+  --color-on-primary: #0b0f1a;
+  --color-secondary: #334165;
+  --color-on-secondary: #ffffff;
+  --color-accent: #ff6452;
+  --color-on-accent: #10172b;
+  --color-background: #0b0f1a;
+  --color-foreground: #e5e7eb;
+  --color-card: #121829;
+  --color-card-foreground: #e5e7eb;
+  --color-muted: #1b2335;
+  --color-muted-foreground: #9aa3b5;
+  --color-border: #2a3348;
+  --color-destructive: #f87171;
+  --color-on-destructive: #1a0505;
+  --color-ring: #8da0e8;
 }
 
 @theme inline {

@@ -18,7 +18,7 @@ export function LiveHero({
   counts?: Record<string, number>;
 }) {
   return (
-    <section className="relative overflow-hidden border-b border-border bg-primary">
+    <section className="relative overflow-hidden border-b border-border bg-[#10172b]">
       <Image
         src="/images/hero-world-map.webp"
         alt=""
@@ -27,9 +27,12 @@ export function LiveHero({
         aria-hidden="true"
         className="object-cover opacity-70"
       />
+      {/* Fixed navy, not the --color-primary token: this banner stays dark with
+          white text in both themes, so it must not shift when primary lightens
+          for dark mode. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/50 via-primary/20 to-primary"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#10172b]/50 via-[#10172b]/20 to-[#10172b]"
       />
       <div className="relative z-10 mx-auto max-w-5xl px-4 py-20 text-center sm:px-6 lg:px-8">
         <h1 className="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
@@ -55,7 +58,7 @@ export function LiveHero({
               name="q"
               type="search"
               placeholder="Search by title, organization, or country..."
-              className="w-full rounded-full border border-transparent bg-white py-3 pl-10 pr-4 text-sm text-card-foreground placeholder:text-muted-foreground focus:border-accent"
+              className="w-full rounded-full border border-transparent bg-card py-3 pl-10 pr-4 text-sm text-card-foreground placeholder:text-muted-foreground focus:border-accent"
             />
           </div>
           <button
@@ -89,7 +92,7 @@ export function LiveHero({
                   <Link
                     key={o.id}
                     href={`/opportunities/${o.type}/${o.slug}`}
-                    className="rounded-xl bg-white p-4 transition-all hover:-translate-y-1 hover:shadow-xl"
+                    className="rounded-xl bg-card p-4 transition-all hover:-translate-y-1 hover:shadow-xl"
                   >
                     <span
                       className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${theme.badge}`}

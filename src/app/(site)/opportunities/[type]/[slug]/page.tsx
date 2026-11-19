@@ -301,7 +301,7 @@ export default async function OpportunityDetailPage({ params }: PageProps) {
           {isClosed && (
             <p
               role="status"
-              className="mt-5 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm font-medium text-amber-900"
+              className="mt-5 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm font-medium text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200"
             >
               The deadline for this opportunity has passed. Check the official website to see
               if applications reopen, or{" "}

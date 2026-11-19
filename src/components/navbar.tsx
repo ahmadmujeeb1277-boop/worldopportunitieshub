@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { List, X, MagnifyingGlass, CaretDown } from "@phosphor-icons/react";
 import { Logo } from "./logo";
+import { ThemeToggle } from "./theme-toggle";
 import { OPPORTUNITY_TYPES } from "@/lib/taxonomy";
 
 const primaryLinks = [
@@ -99,6 +100,7 @@ export function Navbar({ counts = {} }: { counts?: Record<string, number> }) {
           >
             <MagnifyingGlass size={20} aria-hidden="true" />
           </Link>
+          <ThemeToggle />
           <Link
             href="/newsletter"
             className="cursor-pointer rounded-full bg-primary px-4 py-2 text-sm font-semibold text-[var(--color-on-primary)] transition-opacity hover:opacity-90"
@@ -138,14 +140,15 @@ export function Navbar({ counts = {} }: { counts?: Record<string, number> }) {
                 </Link>
               </li>
             ))}
-            <li className="mt-1 border-t border-border pt-1">
+            <li className="mt-1 flex items-center justify-between border-t border-border pt-1">
               <Link
                 href="/search"
-                className="block rounded-md px-3 py-2.5 text-base font-medium text-card-foreground/85 hover:bg-muted"
+                className="block flex-1 rounded-md px-3 py-2.5 text-base font-medium text-card-foreground/85 hover:bg-muted"
                 onClick={() => setMobileOpen(false)}
               >
                 Search
               </Link>
+              <ThemeToggle />
             </li>
             <li>
               <Link

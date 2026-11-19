@@ -35,13 +35,20 @@ export const metadata: Metadata = {
   },
 };
 
+// Runs before paint so the page never flashes the wrong theme: reads the
+// saved choice (or the OS preference, on a first visit) and sets the class
+// the "dark" Tailwind variant above keys off of.
+const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme: dark)").matches)){document.documentElement.classList.add("dark")}}catch(e){}})();`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${inter.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <GoogleAdsense />
         {children}
       </body>
