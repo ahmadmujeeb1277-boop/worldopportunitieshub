@@ -100,13 +100,13 @@ export function Navbar({ counts = {} }: { counts?: Record<string, number> }) {
           >
             <MagnifyingGlass size={20} aria-hidden="true" />
           </Link>
-          <ThemeToggle />
           <Link
             href="/newsletter"
             className="cursor-pointer rounded-full bg-primary px-4 py-2 text-sm font-semibold text-[var(--color-on-primary)] transition-opacity hover:opacity-90"
           >
             Get Alerts
           </Link>
+          <ThemeToggle />
         </div>
 
         <button
